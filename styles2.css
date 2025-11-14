@@ -1,0 +1,590 @@
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- INICIO: ESTILOS PEGADOS DE SVG MAKER --- */
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- */
+
+/* --- Reseteo Básico y Fuente (Se adaptará al body de editorcreador) --- */
+/* NOTA: Estos estilos se aplicarán DENTRO de #tab-content-ia3d */
+
+#tab-content-ia3d {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1f2937; /* text-gray-900 */
+    line-height: 1.5;
+}
+
+/* --- Layout Principal --- */
+#tab-content-ia3d .container {
+    max-width: 90rem; /* max-w-6xl */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0; /* Sin padding, ya lo da el contenedor de la pestaña */
+}
+
+#tab-content-ia3d .main-content {
+    background-color: #ffffff; /* Fondo blanco para esta pestaña */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-2xl */
+    padding: 1.5rem; /* p-6 */
+    /* ¡IMPORTANTE! Cambiar el color de fondo a oscuro para que coincida */
+    background-color: #1f2937; /* bg-gray-800 */
+}
+
+#tab-content-ia3d header {
+    margin-bottom: 1.5rem; /* mb-6 */
+    border-bottom: 1px solid #374151; /* border-b border-gray-700 */
+    padding-bottom: 1rem; /* pb-4 */
+}
+
+#tab-content-ia3d h1 {
+    font-size: 1.875rem; /* text-3xl */
+    line-height: 2.25rem;
+    font-weight: 700; /* font-bold */
+    color: #ffffff; /* text-white */
+}
+
+#tab-content-ia3d header p {
+    font-size: 1.125rem; /* text-lg */
+    color: #9ca3af; /* text-gray-400 */
+    margin-top: 0.25rem;
+}
+
+#tab-content-ia3d .layout-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem; /* gap-8 */
+}
+
+#tab-content-ia3d .controls-column,
+#tab-content-ia3d .preview-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; 
+}
+
+/* --- Tarjetas y Formularios --- */
+#tab-content-ia3d .card {
+    border: 1px solid #374151; /* border border-gray-700 */
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 1rem; /* p-4 */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+    background-color: #374151; /* bg-gray-700 */
+}
+
+#tab-content-ia3d .card-title {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600; /* font-semibold */
+    color: #e5e7eb; /* text-gray-200 */
+    margin-bottom: 0.75rem; /* mb-3 */
+}
+
+#tab-content-ia3d .label {
+    display: block;
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+    color: #d1d5db; /* text-gray-300 */
+    margin-bottom: 0.25rem; /* mb-1 */
+}
+
+/* Usar .json-value para unificar estilos de inputs */
+#tab-content-ia3d .input-field,
+#tab-content-ia3d .textarea-field,
+#tab-content-ia3d .select-field {
+    background-color: #374151; /* bg-gray-700 */
+    border: 1px solid #4b5563; /* border border-gray-600 */
+    border-radius: 0.375rem; /* rounded-md */
+    padding: 0.5rem 0.75rem; /* px-3 py-2 */
+    color: white; /* text-white */
+    width: 100%; /* w-full */
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#tab-content-ia3d .input-field:focus,
+#tab-content-ia3d .textarea-field:focus,
+#tab-content-ia3d .select-field:focus {
+    outline: none;
+    border-color: #2563eb; /* focus:border-blue-500 */
+    box-shadow: 0 0 0 2px #3b82f6; /* focus:ring-2 focus:ring-blue-500 */
+}
+
+#tab-content-ia3d .select-field {
+    /* (Re-declarar estilos de flecha para select) */
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem; /* Make space for the arrow */
+}
+
+#tab-content-ia3d .textarea-field {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+/* --- Botones --- */
+#tab-content-ia3d .btn {
+    font-weight: 700; /* font-bold */
+    padding: 0.5rem 1rem; /* py-2 px-4 */
+    border-radius: 0.5rem; /* rounded-lg */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow */
+    transition: background-color 0.2s ease-in-out;
+    margin-top: 0.75rem; /* mt-3 */
+    width: auto; 
+}
+
+#tab-content-ia3d .card .btn {
+    width: 100%;
+}
+
+
+#tab-content-ia3d .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+#tab-content-ia3d .btn-primary {
+    background-color: #2563eb; /* bg-blue-600 */
+    color: #ffffff; /* text-white */
+}
+#tab-content-ia3d .btn-primary:hover {
+    background-color: #1d4ed8; /* hover:bg-blue-700 */
+}
+
+#tab-content-ia3d .btn-secondary {
+    background-color: #6b7280; /* bg-gray-500 */
+    color: #ffffff; /* text-white */
+}
+#tab-content-ia3d .btn-secondary:hover {
+    background-color: #4b5563; /* hover:bg-gray-600 */
+}
+
+#tab-content-ia3d .btn-dark {
+    background-color: #374151; /* bg-gray-700 */
+    color: #ffffff; /* text-white */
+}
+#tab-content-ia3d .btn-dark:hover {
+    background-color: #1f2937; /* hover:bg-gray-800 */
+}
+
+#tab-content-ia3d .btn-purple {
+    background-color: #9333ea; /* bg-purple-600 */
+    color: #ffffff; /* text-white */
+}
+#tab-content-ia3d .btn-purple:hover {
+    background-color: #7e22ce; /* hover:bg-purple-700 */
+}
+
+#tab-content-ia3d .btn-success {
+    background-color: #16a34a; /* bg-green-600 */
+    color: #ffffff;
+}
+#tab-content-ia3d .btn-success:hover {
+    background-color: #15803d; /* hover:bg-green-700 */
+}
+
+#tab-content-ia3d .btn-danger {
+    background-color: #dc2626; /* bg-red-600 */
+    color: #ffffff;
+}
+#tab-content-ia3d .btn-danger:hover {
+    background-color: #b91c1c; /* hover:bg-red-700 */
+}
+
+
+/* --- Columna de Vista Previa --- */
+#tab-content-ia3d #previewArea {
+    width: 100%;   position: relative;
+    aspect-ratio: 1 / 1; /* aspect-square */
+    background-color: #111827; /* bg-gray-900 */
+    border-radius: 0.5rem; /* rounded-lg */
+    border: 2px dashed #374151; /* border-2 border-dashed border-gray-700 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05); /* shadow-inner */
+}
+#tab-content-ia3d #previewArea p {
+    color: #4b5563; /* text-gray-600 */
+}
+#tab-content-ia3d #previewArea img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 0.5rem; /* rounded-lg */
+}
+#tab-content-ia3d #previewArea svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 0.5rem; /* rounded-lg */
+}
+
+#tab-content-ia3d #previewArea canvas {
+    display: block; 
+    width: 100%;
+    height: 100%;
+    position: absolute; 
+    top: 0;
+    left: 0;
+    border-radius: 0.5rem; 
+}
+
+
+#tab-content-ia3d .selection-rectangle {
+    fill: rgba(59, 130, 246, 0.2); 
+    stroke: #3b82f6; 
+    stroke-width: 1px;
+    stroke-dasharray: 3 3; 
+}
+#tab-content-ia3d .shape-selected {
+    stroke: #3b82f6 !important; 
+    stroke-width: 5 !important; 
+    stroke-dasharray: 10 5 !important; 
+    stroke-opacity: 0.9 !important;
+}
+#tab-content-ia3d .status-message {
+    margin-top: 0.5rem; /* mt-2 */
+    font-size: 0.875rem; /* text-sm */
+    min-height: 1.25rem; 
+}
+#tab-content-ia3d .status-error {
+    color: #dc2626; /* text-red-600 */
+}
+#tab-content-ia3d .status-success {
+    color: #16a34a; /* text-green-600 */
+}
+
+#tab-content-ia3d .actions-container {
+    margin-top: 1rem; /* mt-4 */
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* gap-3 */
+}
+#tab-content-ia3d .actions-container .btn {
+    flex: 1;
+    margin-top: 0;
+}
+
+#tab-content-ia3d #svgCodeWrapper {
+    margin-top: 1rem;
+}
+#tab-content-ia3d #svgCodeContainer {
+    max-height: 200px; /* max-h-52 */
+    overflow-y: auto; /* overflow-y-auto */
+    background-color: #111827; /* bg-gray-900 */
+    color: #d1d5db; /* text-gray-300 */
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 0.75rem; /* p-3 */
+    margin-top: 0.25rem; /* mt-1 */
+    font-family: monospace;
+    font-size: 0.875rem;
+}
+#tab-content-ia3d #svgCode {
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* --- Loader --- */
+#tab-content-ia3d .loader-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(17, 24, 39, 0.5); /* bg-gray-900 bg-opacity-50 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    transition: opacity 0.3s ease;
+    opacity: 1;
+}
+#tab-content-ia3d .loader-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+#tab-content-ia3d .loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#tab-content-ia3d .spinner {
+    width: 4rem; /* w-16 */
+    height: 4rem; /* h-16 */
+    border: 4px solid #374151; /* border-gray-700 */
+    border-top-color: #3b82f6; /* border-t-blue-500 */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+#tab-content-ia3d .loader-content p {
+    color: #ffffff;
+    font-size: 1.125rem; /* text-lg */
+    margin-top: 1rem; /* mt-4 */
+    font-weight: 600; /* font-semibold */
+}
+
+/* (Keyframes 'spin' ya está definido globalmente, no hace falta repetirlo) */
+
+/* --- Galería --- */
+#tab-content-ia3d .gallery-container {
+    /* --- ¡¡¡CORRECCIÓN CLAVE!!! --- */
+    display: block; /* Sobrescribe el 'display: grid' de styles.css */
+    /* --- Fin Corrección --- */
+    
+    margin-top: 2rem;
+    background-color: #374151; /* bg-gray-700 */
+    border: 1px solid #4b5563; /* border-gray-600 */
+    border-radius: 0.5rem;
+    padding: 1rem; /* Re-añadido padding de .card */
+}
+#tab-content-ia3d .gallery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap; /* Para pantallas pequeñas */
+    gap: 1rem;
+}
+#tab-content-ia3d .gallery-header .btn,
+#tab-content-ia3d .gallery-header .btn-success {
+    margin-top: 0; 
+    white-space: nowrap; 
+}
+#tab-content-ia3d .gallery-grid {
+    display: grid;
+    /* --- CAMBIO ANTERIOR (Correcto) --- */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+#tab-content-ia3d .gallery-item {
+    border: 1px solid #4b5563; /* border-gray-600 */
+    border-radius: 0.5rem;
+    /* --- CAMBIO ANTERIOR (Correcto) --- */
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    /* --- CAMBIO ANTERIOR (Correcto) --- */
+    background-color: #374151; /* bg-gray-700 */
+}
+#tab-content-ia3d .gallery-item:hover {
+    border-color: #2563eb;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+}
+#tab-content-ia3d .gallery-item img {
+    width: 100%;
+    /* --- CAMBIO ANTERIOR (Correcto) --- */
+    height: 100px; 
+    object-fit: contain;
+    background-color: #1f2937; /* bg-gray-800 */
+    /* --- CAMBIO ANTERIOR (Correcto) --- */
+    border-radius: 0;
+    border-bottom: 1px solid #4b5563;
+}
+#tab-content-ia3d .gallery-item-name {
+    /* --- CAMBIO ANTERIOR (Correcto) --- */
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-top: 0;
+    padding: 0.5rem 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #e5e7eb; /* text-gray-200 */
+}
+#tab-content-ia3d .gallery-item-status {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(55, 65, 81, 0.9); /* bg-gray-700/90 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.5rem;
+    z-index: 10; 
+    color: #e5e7eb; /* text-gray-200 */
+}
+#tab-content-ia3d .gallery-item-status .spinner-small {
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 3px solid #4b5563; /* border-gray-600 */
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 0.5rem;
+}
+#tab-content-ia3d .gallery-item.status-error .gallery-item-status {
+    color: #fca5a5; /* text-red-300 */
+}
+#tab-content-ia3d .gallery-grid > p {
+    color: #9ca3af; /* text-gray-400 */
+}
+
+
+/* --- Modal --- */
+#tab-content-ia3d .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(17, 24, 39, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100; /* Asegurarse de que esté por encima del modal principal */
+    transition: opacity 0.3s ease;
+    opacity: 1;
+    padding: 1rem;
+}
+#tab-content-ia3d .modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+#tab-content-ia3d .modal-content {
+    background-color: #374151; /* bg-gray-700 */
+    width: 100%;
+    max-width: 500px; /* max-w-lg */
+    max-height: 90vh;
+    overflow-y: auto;
+    /* .card ya aplica padding y border-radius */
+}
+#tab-content-ia3d .modal-content .input-field,
+#tab-content-ia3d .modal-content .textarea-field {
+    margin-bottom: 1rem;
+}
+#tab-content-ia3d .modal-actions {
+    display: flex;
+    flex-wrap: wrap; /* Para móviles */
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+#tab-content-ia3d .modal-actions .btn {
+    margin-top: 0;
+}
+
+/* Zona de confirmación de borrado */
+#tab-content-ia3d .modal-delete-confirm {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #4b5563; /* border-gray-600 */
+    background-color: #452323; /* bg-red-900/50 */
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid #991b1b; /* border-red-800 */
+}
+#tab-content-ia3d .modal-delete-confirm p {
+    color: #fca5a5; /* text-red-300 */
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+
+/* --- Utilidad --- */
+/* (La clase .hidden global ya existe en styles.css) */
+
+/* --- NUEVOS ESTILOS (Añadidos al final) --- */
+
+/* Estilo para el ítem de galería seleccionado */
+#tab-content-ia3d .gallery-item.selected {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px #2563eb; /* Efecto de anillo */
+}
+#tab-content-ia3d .gallery-item.selected:hover {
+    transform: none;
+}
+
+/* Contenedor de botones de acción en la galería */
+#tab-content-ia3d .gallery-item-actions {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    display: flex;
+    gap: 0.25rem;
+    opacity: 0; /* Oculto por defecto */
+    transition: opacity 0.2s ease-in-out;
+    z-index: 5; 
+}
+
+#tab-content-ia3d .gallery-item:hover .gallery-item-actions {
+    opacity: 1;
+}
+
+/* Estilo de los botones (editar/eliminar) */
+#tab-content-ia3d .gallery-item-btn {
+    width: 1.75rem; /* 28px */
+    height: 1.75rem; /* 28px */
+    border-radius: 50%; /* Circular */
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem; /* 14px */
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    transition: background-color 0.2s;
+}
+
+#tab-content-ia3d .gallery-item-btn.edit {
+    background-color: #2563eb; /* Azul */
+}
+#tab-content-ia3d .gallery-item-btn.edit:hover {
+    background-color: #1d4ed8;
+}
+
+#tab-content-ia3d .gallery-item-btn.delete {
+    background-color: #dc2626; /* Rojo */
+}
+#tab-content-ia3d .gallery-item-btn.delete:hover {
+    background-color: #b91c1c;
+}
+
+
+/* --- Responsividad --- */
+@media (min-width: 768px) { /* md: */
+    #tab-content-ia3d .container {
+        padding: 0; /* md:p-8 */
+    }
+    #tab-content-ia3d .main-content {
+        padding: 2rem; /* md:p-8 */
+    }
+    #tab-content-ia3d .layout-container {
+        flex-direction: row; /* md:flex-row */
+    }
+    #tab-content-ia3d .controls-column,
+    #tab-content-ia3d .preview-column {
+        width: 50%; /* md:w-1/2 */
+    }
+    #tab-content-ia3d .actions-container {
+        flex-direction: row; /* sm:flex-row */
+    }
+}
+
+/* Estilos para la nueva sección de Controles 3D */
+#tab-content-ia3d #controls3DSection .textarea-field {
+    margin-bottom: 0.75rem; /* mb-3 */
+}
+#tab-content-ia3d .actions-3d-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* gap-3 */
+}
+
+@media (min-width: 640px) { /* sm: */
+    #tab-content-ia3d .actions-3d-buttons {
+        flex-direction: row; 
+        flex-wrap: wrap; /* Permitir que pasen a la siguiente línea */
+    }
+    #tab-content-ia3d .actions-3d-buttons .btn {
+        flex: 1 1 auto; /* Permitir crecer pero también encogerse y envolver */
+    }
+}
+
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- FIN: ESTILOS PEGADOS DE SVG MAKER --- */
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- */

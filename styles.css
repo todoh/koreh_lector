@@ -1,0 +1,893 @@
+/* editorcreador/styles.css */
+/* Estilos para los botones de añadir/eliminar */
+.json-btn {
+    width: 1.5rem; /* w-6 */
+    height: 1.5rem; /* h-6 */
+    border-radius: 9999px; /* rounded-full */
+    color: white; /* text-white */
+    font-weight: 700; /* font-bold */
+    font-size: 0.75rem; /* text-xs */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+    transition: all 150ms; /* transition-all duration-150 */
+    flex-shrink: 0; /* ¡NUEVO! Evita que se encoja */
+}
+.json-btn-add {
+    background-color: #22c55e; /* bg-green-500 */
+}
+.json-btn-add:hover {
+    background-color: #16a34a; /* hover:bg-green-600 */
+}
+.json-btn-del {
+    background-color: #ef4444; /* bg-red-500 */
+}
+.json-btn-del:hover {
+    background-color: #dc2626; /* hover:bg-red-600 */
+}
+
+/* Estilos para los nodos del editor */
+.json-node {
+    padding-left: 1rem; /* pl-4 */
+    border-left: 2px solid #374151; /* border-l-2 border-gray-700 */
+}
+.json-key {
+    background-color: #374151; /* bg-gray-700 */
+    border: 1px solid #4b5563; /* border border-gray-600 */
+    border-radius: 0.375rem; /* rounded-md */
+    padding: 0.25rem 0.5rem; /* px-2 py-1 */
+    color: #67e8f9; /* text-cyan-300 */
+    font-family: monospace; /* font-mono */
+    font-size: 0.875rem; /* text-sm */
+}
+.json-value {
+    background-color: #374151; /* bg-gray-700 */
+    border: 1px solid #4b5563; /* border border-gray-600 */
+    border-radius: 0.375rem; /* rounded-md */
+    padding: 0.25rem 0.5rem; /* px-2 py-1 */
+    color: white; /* text-white */
+    font-family: monospace; /* font-mono */
+    font-size: 0.875rem; /* text-sm */
+    width: 100%; /* w-full */
+}
+/* Específico para <select> */
+select.json-value {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+
+/* --- ¡NUEVO! Estilo para el contenedor del editor JSON crudo --- */
+.json-raw-editor-container {
+    padding: 1rem;
+    border: 1px solid #374151; /* border-gray-700 */
+    border-radius: 0.375rem; /* rounded-md */
+    background-color: #111827; /* bg-gray-900 */
+    min-height: 200px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+
+/* --- ESTILOS MODIFICADOS (Galería y Modal) --- */
+.gallery-card {
+    background-color: #374151; /* bg-gray-700 */
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; -- ¡CAMBIO! Eliminado */
+    transition: all 150ms; /* transition-all duration-150 */
+    overflow: hidden; /* ¡NUEVO! Para contener la imagen */
+}
+.gallery-card:hover {
+    --tw-shadow-color: rgba(6, 182, 212, 0.2); /* hover:shadow-cyan-500/20 */
+    box-shadow: 0 0 #0000, 0 0 #0000, 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -2px var(--tw-shadow-color);
+    outline: 2px solid #06b6d4; /* hover:ring-2 hover:ring-cyan-500 */
+    outline-offset: 2px;
+}
+
+/* --- ¡NUEVO! Estilos para imagen en tarjeta --- */
+.gallery-card-image-wrapper {
+    width: 100%;
+    height: 100px; /* ¡CAMBIO! 120px -> 100px */
+    background-color: #111827; /* bg-gray-900 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-bottom: 1px solid #4b5563; /* border-gray-600 */
+}
+.gallery-card-image-wrapper-empty {
+    width: 100%;
+    height: 100px; /* ¡CAMBIO! 120px -> 100px */
+    background-color: #1f2937; /* bg-gray-800 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280; /* text-gray-500 */
+    font-size: 0.875rem; /* text-sm */
+    border-bottom: 1px solid #4b5563; /* border-gray-600 */
+}
+.gallery-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* 'contain' para que no se deforme */
+    image-rendering: pixelated; /* Para pixel art */
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+}
+.gallery-card-info {
+     padding: 0.5rem 0.75rem; /* ¡CAMBIO! p-4 -> py-2 px-3 */
+}
+/* --- FIN de estilos de imagen en tarjeta --- */
+
+.gallery-card-key {
+    font-size: 0.875rem; /* ¡CAMBIO! text-lg -> text-sm */
+    font-weight: 700; /* font-bold */
+    color: #67e8f9; /* text-cyan-300 */
+    font-family: monospace; /* font-mono */
+    word-break: break-all; /* Para claves largas */
+}
+.gallery-card-name {
+    font-size: 0.75rem; /* ¡CAMBIO! text-sm -> text-xs */
+    color: #d1d5db; /* text-gray-300 */
+    font-style: italic; /* italic */
+    margin-bottom: 0; /* ¡CAMBIO! mb-3 -> mb-0 */
+}
+/* --- ¡CAMBIO! Se eliminaron .gallery-card-btn y .gallery-card-btn:hover --- */
+
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0; right: 0; bottom: 0; left: 0; /* inset-0 */
+    background-color: rgba(0, 0, 0, 0.7); /* bg-black/70 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem; /* p-4 */
+    z-index: 50; /* z-50 */
+    transition: opacity 150ms; /* transition-opacity duration-150 */
+    display: none; /* hidden */
+    opacity: 0; /* opacity-0 */
+}
+.modal-content {
+    background-color: #1f2937; /* bg-gray-800 */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* shadow-2xl */
+    padding: 1.5rem; /* p-6 */
+    width: 100%; /* w-full */
+    max-width: 42rem; /* max-w-2xl */
+    max-height: 90vh; /* max-h-[90vh] */
+    display: flex;
+    flex-direction: column;
+}
+.modal-body {
+    overflow-y: auto; /* overflow-y-auto */
+    margin-top: 1rem; /* mt-4 */
+    margin-bottom: 1.5rem; /* mb-6 */
+    padding-right: 0.5rem; /* pr-2 */
+}
+
+/* --- ¡NUEVO! Estilos para la cuadrícula de Assets --- */
+.asset-grid-container {
+    padding: 1rem;
+    border: 1px solid #374151; /* border-gray-700 */
+    border-radius: 0.375rem; /* rounded-md */
+    background-color: #111827; /* bg-gray-900 */
+    min-height: 150px;
+    max-height: 70vh;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Cuadrícula responsive */
+    gap: 1rem;
+}
+.asset-grid-item {
+    background-color: #374151; /* bg-gray-700 */
+    border-radius: 0.375rem; /* rounded-md */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #4b5563; /* border-gray-600 */
+}
+.asset-grid-image {
+    width: 100%;
+    height: 100px; /* Altura fija */
+    object-fit: contain;
+    background-color: #1f2937; /* bg-gray-800 */
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+}
+.asset-grid-label {
+    padding: 0.25rem 0.5rem; /* py-1 px-2 */
+    font-size: 0.75rem; /* text-xs */
+    color: #9ca3af; /* text-gray-400 */
+    font-family: monospace;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- ¡NUEVO! Estilos! Para el Friendly Editor (Modal) --- */
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- */
+
+.editor-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem; /* space-y-1 */
+}
+.editor-field-label {
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+    color: #d1d5db; /* text-gray-300 */
+    margin-bottom: 0.25rem; /* mb-1 */
+}
+
+/* Contenedor de componentes */
+.components-wrapper {
+    margin-top: 1.5rem; /* mt-6 */
+    padding-top: 1rem; /* pt-4 */
+    border-top: 1px solid #374151; /* border-t border-gray-700 */
+}
+.components-header {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600; /* font-semibold */
+    color: white; /* text-white */
+    margin-bottom: 1rem; /* mb-4 */
+}
+
+/* Tarjeta de componente individual */
+.component-card {
+    background-color: #374151; /* bg-gray-700 */
+    border-radius: 0.5rem; /* rounded-lg */
+    border: 1px solid #4b5563; /* border-gray-600 */
+    overflow: hidden; /* Para contener los bordes redondeados */
+}
+.component-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* gap-3 */
+    padding: 0.75rem 1rem; /* p-3 px-4 */
+    background-color: #4b5563; /* bg-gray-600 */
+}
+.component-card-body {
+    padding: 1rem; /* p-4 */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* space-y-4 */
+}
+
+/* Editor para Collision Box */
+.collision-box-editor {
+    padding: 0.75rem; /* p-3 */
+    background-color: #1f2937; /* bg-gray-800 */
+    border-radius: 0.375rem; /* rounded-md */
+    border: 1px solid #4b5563; /* border-gray-600 */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+    gap: 0.75rem; /* gap-3 */
+}
+/* Hacer que los labels de collision-box sean más pequeños */
+.collision-box-editor .editor-field-label {
+    font-size: 0.75rem; /* text-xs */
+    color: #9ca3af; /* text-gray-400 */
+}
+
+/* Fila para añadir nuevo componente */
+.add-component-wrapper {
+    display: flex;
+    gap: 0.5rem; /* gap-2 */
+    margin-top: 1rem; /* mt-4 */
+}
+.add-component-wrapper .json-value {
+    flex-grow: 1; /* Ocupar espacio */
+}
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- ¡NUEVO! Estilos para los campos de selector (tipo 'image_select') --- */
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- */
+.image-selector-input,
+.entity-selector-input,
+.item-selector-input,
+.terrain-selector-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* gap-2 */
+    background-color: #374151; /* bg-gray-700 */
+    border: 1px solid #4b5563; /* border border-gray-600 */
+    border-radius: 0.375rem; /* rounded-md */
+    padding: 0.25rem; /* p-1 */
+    width: 100%; /* w-full */
+}
+
+.image-selector-preview,
+.entity-selector-preview,
+.item-selector-preview,
+.terrain-selector-preview {
+    width: 2.5rem; /* w-10 */
+    height: 2.5rem; /* h-10 */
+    flex-shrink: 0;
+    background-color: #1f2937; /* bg-gray-800 */
+    border-radius: 0.25rem; /* rounded-sm */
+    object-fit: contain;
+    image-rendering: pixelated;
+    border: 1px solid #4b5563;
+}
+
+.image-selector-key-display,
+.entity-selector-key-display,
+.item-selector-key-display,
+.terrain-selector-key-display {
+    flex-grow: 1;
+    font-family: monospace; /* font-mono */
+    font-size: 0.875rem; /* text-sm */
+    color: white; /* text-white */
+    padding: 0 0.5rem; /* px-2 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.image-selector-button,
+.entity-selector-button,
+.item-selector-button,
+.terrain-selector-button {
+    flex-shrink: 0;
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 600; /* font-semibold */
+    background-color: #4b5563; /* bg-gray-600 */
+    color: white;
+    border: none;
+    border-radius: 0.25rem; /* rounded-sm */
+    padding: 0.5rem 0.75rem; /* py-2 px-3 */
+    cursor: pointer;
+    transition: background-color 150ms;
+}
+.image-selector-button:hover,
+.entity-selector-button:hover,
+.item-selector-button:hover,
+.terrain-selector-button:hover {
+    background-color: #525f73; /* hover:bg-gray-500 */
+}
+/* --- Fin estilos selector --- */
+
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- ¡NUEVO! Estilos! Para el Editor de Listas (Biomas) --- */
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- */
+
+.list-editor-wrapper {
+    background-color: #1f2937; /* bg-gray-800 */
+    border-radius: 0.375rem; /* rounded-md */
+    border: 1px solid #4b5563; /* border-gray-600 */
+}
+.list-editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem; /* py-2 px-3 */
+    background-color: #374151; /* bg-gray-700 */
+    border-bottom: 1px solid #4b5563; /* border-gray-600 */
+}
+.list-editor-title {
+    font-weight: 600; /* font-semibold */
+    color: #d1d5db; /* text-gray-300 */
+}
+.list-editor-body {
+    padding: 0.75rem; /* p-3 */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* space-y-2 */
+    max-height: 300px;
+    overflow-y: auto;
+}
+.list-editor-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* gap-2 */
+}
+.list-editor-row .json-value {
+    font-size: 0.75rem; /* text-xs */
+}
+.list-editor-row .json-btn-del {
+    flex-shrink: 0;
+}
+.list-editor-row .editor-field {
+    flex-grow: 1;
+    gap: 0; /* Sin espacio entre label e input */
+}
+.list-editor-row .editor-field-label {
+    font-size: 0.65rem; /* text-[10px] */
+    color: #9ca3af; /* text-gray-400 */
+    margin-bottom: 0;
+}
+
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- ¡NUEVO! Estilos! Para la Pestaña de IA --- */
+/* --- --- --- --- --- --- --- --- --- --- --- --- */
+.ia-api-key-wrapper {
+    display: flex;
+    gap: 0.5rem; /* gap-2 */
+    align-items: center;
+}
+.ia-api-key-wrapper .json-value {
+    flex-grow: 1;
+}
+.ia-api-key-wrapper .json-editor-btn {
+    flex-shrink: 0;
+    height: 2.5rem; /* h-10 */
+}
+
+.ia-radio-group {
+    display: flex;
+    gap: 1rem; /* gap-4 */
+    background-color: #111827; /* bg-gray-900 */
+    padding: 0.5rem; /* p-2 */
+    border-radius: 0.5rem; /* rounded-lg */
+}
+.ia-radio-label {
+    flex-grow: 1;
+    text-align: center;
+    padding: 0.5rem 1rem; /* py-2 px-4 */
+    border-radius: 0.375rem; /* rounded-md */
+    cursor: pointer;
+    color: #9ca3af; /* text-gray-400 */
+    transition: all 150ms;
+}
+.ia-radio-label:hover {
+    background-color: #374151; /* hover:bg-gray-700 */
+}
+.ia-radio-input {
+    display: none; /* Ocultar el radio real */
+}
+.ia-radio-input:checked + .ia-radio-label {
+    background-color: #06b6d4; /* bg-cyan-500 */
+    color: white; /* text-white */
+    font-weight: 600; /* font-semibold */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+}
+
+.ia-preview-wrapper {
+    min-height: 256px; /* h-64 */
+    width: 100%;
+    background-color: #111827; /* bg-gray-900 */
+    border-radius: 0.5rem; /* rounded-lg */
+    border: 2px dashed #374151; /* border-2 border-dashed border-gray-700 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem; /* p-4 */
+    position: relative;
+    overflow: hidden;
+}
+.ia-preview-img {
+    max-width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    border-radius: 0.25rem; /* rounded-sm */
+}
+/* Para fondo de damero en texturas */
+.ia-preview-img-texture {
+     background-image: 
+        linear-gradient(45deg, #4b5563 25%, transparent 25%), 
+        linear-gradient(-45deg, #4b5563 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #4b5563 75%), 
+        linear-gradient(-45deg, transparent 75%, #4b5563 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+.ia-preview-placeholder {
+    color: #4b5563; /* text-gray-600 */
+    text-align: center;
+}
+.ia-preview-loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(31, 41, 55, 0.8); /* bg-gray-800/80 */
+    backdrop-filter: blur(4px);
+    z-index: 10;
+}
+.ia-loader-spinner {
+    width: 4rem; /* w-16 */
+    height: 4rem; /* h-16 */
+    border-radius: 9999px; /* rounded-full */
+    border: 4px solid #374151; /* border-4 border-gray-700 */
+    border-top-color: #06b6d4; /* border-t-cyan-500 */
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.ia-save-panel {
+    background-color: #1f2937; /* bg-gray-800 */
+    border: 1px solid #374151; /* border-gray-700 */
+    padding: 1rem; /* p-4 */
+    border-radius: 0.5rem; /* rounded-lg */
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* gap-3 */
+}
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- ¡NUEVO! Estilos! Para la Cola de IA (Modificados) --- */
+/* --- --- --- --- --- --- --- --- --- --- --- --- */
+.ia-queue-card {
+    display: flex;
+    gap: 1rem; /* gap-4 */
+    background-color: #374151; /* bg-gray-700 */
+    border-radius: 0.5rem; /* rounded-lg */
+    border: 1px solid #4b5563; /* border-gray-600 */
+    padding: 1rem; /* p-4 */
+    align-items: center;
+    transition: all 150ms ease-out;
+}
+.ia-queue-card-preview {
+    flex-shrink: 0;
+    width: 80px; /* w-20 */
+    height: 80px; /* h-20 */
+    background-color: #111827; /* bg-gray-900 */
+    border-radius: 0.375rem; /* rounded-md */
+    overflow: hidden;
+    border: 1px solid #4b5563; /* border-gray-600 */
+    /* ¡NUEVO! Centrar contenido (para spinner/emoji) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ia-queue-card-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.ia-queue-card-info {
+    flex-grow: 1;
+    min-width: 0; /* Para que text-overflow funcione */
+}
+.ia-queue-card-name {
+    font-weight: 600; /* font-semibold */
+    color: white;
+    font-size: 1.125rem; /* text-lg */
+}
+.ia-queue-card-key {
+    font-family: monospace;
+    color: #67e8f9; /* text-cyan-300 */
+    font-size: 0.875rem; /* text-sm */
+}
+.ia-queue-card-prompt {
+    font-size: 0.75rem; /* text-xs */
+    color: #9ca3af; /* text-gray-400 */
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 4px;
+}
+.ia-queue-card-actions {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* gap-2 */
+}
+.ia-queue-card-actions .json-editor-btn {
+    width: 100%;
+    height: 2.25rem; /* h-9 */
+    font-size: 0.875rem; /* text-sm */
+    padding: 0.25rem 0.75rem; /* py-1 px-3 */
+}
+
+/* --- Estado Pendiente --- */
+.ia-queue-card-pending {
+    background-color: #1f2937; /* bg-gray-800 */
+    border-style: dashed;
+}
+.ia-queue-card-pending .ia-queue-card-name {
+    color: #9ca3af; /* text-gray-400 */
+}
+.ia-queue-card-status-text {
+    font-size: 0.875rem; /* text-sm */
+    color: #06b6d4; /* text-cyan-500 */
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ia-loader-spinner-small {
+    width: 2.5rem; /* w-10 */
+    height: 2.5rem; /* h-10 */
+    border-radius: 9999px; /* rounded-full */
+    border: 3px solid #374151; /* border-gray-700 */
+    border-top-color: #06b6d4; /* border-t-cyan-500 */
+    animation: spin 1s linear infinite;
+}
+
+/* --- Estado Fallido --- */
+.ia-queue-card-failed {
+    background-color: #452323; /* bg-red-900/50 */
+    border-color: #991b1b; /* border-red-800 */
+}
+.ia-queue-card-failed .ia-queue-card-name {
+    color: #fca5a5; /* text-red-300 */
+}
+.ia-queue-card-error {
+    font-size: 0.75rem; /* text-xs */
+    color: #fca5a5; /* text-red-300 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 4px;
+}
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- ¡NUEVO! Estilos para el Modal de Inventario --- */
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- */
+
+/* Slot individual en el grid de 30 */
+.inv-editor-slot {
+    aspect-ratio: 1 / 1;
+    background-color: #111827; /* bg-gray-900 */
+    border: 1px solid #374151; /* border-gray-700 */
+    border-radius: 0.375rem; /* rounded-md */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 150ms;
+}
+.inv-editor-slot:hover {
+    background-color: #1f2937; /* hover:bg-gray-800 */
+    border-color: #4b5563; /* hover:border-gray-600 */
+}
+.inv-editor-slot.filled:hover {
+    border-color: #9333ea; /* hover:border-purple-600 */
+    transform: scale(1.05);
+}
+.inv-editor-slot-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 0.25rem; /* p-1 */
+    image-rendering: pixelated;
+}
+.inv-editor-slot-qty {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 700; /* font-bold */
+    color: white;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 0 0.25rem;
+    border-radius: 0.25rem;
+    text-shadow: 1px 1px 2px black;
+}
+
+/* Item individual en la lista de la derecha */
+.inv-editor-item-available {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* gap-3 */
+    padding: 0.25rem 0.5rem; /* p-1 px-2 */
+    border-radius: 0.375rem; /* rounded-md */
+    cursor: pointer;
+    transition: all 150ms;
+}
+.inv-editor-item-available:hover {
+    background-color: #374151; /* hover:bg-gray-700 */
+    color: #e5e7eb; /* hover:text-gray-200 */
+}
+.inv-editor-item-available span {
+    font-size: 0.875rem; /* text-sm */
+    color: #d1d5db; /* text-gray-300 */
+}
+.inv-editor-item-available:hover span {
+    color: white;
+}
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- ¡NUEVO! Estilos para el Modal Selector de Imagen --- */
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- */
+.image-selector-grid,
+.entity-selector-grid,
+.item-selector-grid,
+.terrain-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Grid responsive */
+    gap: 1rem;
+}
+
+.image-selector-item,
+.entity-selector-item,
+.item-selector-item,
+.terrain-selector-item {
+    background-color: #374151; /* bg-gray-700 */
+    border-radius: 0.375rem; /* rounded-md */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #4b5563; /* border-gray-600 */
+    cursor: pointer;
+    transition: all 150ms;
+}
+.image-selector-item:hover,
+.entity-selector-item:hover,
+.item-selector-item:hover,
+.terrain-selector-item:hover {
+    border-color: #06b6d4; /* hover:border-cyan-500 */
+    transform: scale(1.05);
+}
+
+.image-selector-item-img,
+.entity-selector-item-img,
+.item-selector-item-img,
+.terrain-selector-item-img {
+    width: 100%;
+    height: 100px; /* Altura fija */
+    object-fit: contain;
+    background-color: #1f2937; /* bg-gray-800 */
+    image-rendering: pixelated;
+}
+
+/* Contenedor de imagen vacío para el botón (Ninguna) */
+.selector-item-img-empty {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1f2937; /* bg-gray-800 */
+    color: #4b5563; /* text-gray-600 */
+    font-size: 2.25rem; /* text-4xl */
+}
+
+.image-selector-item-label,
+.entity-selector-item-label,
+.item-selector-item-label,
+.terrain-selector-item-label {
+    padding: 0.25rem 0.5rem; /* py-1 px-2 */
+    font-size: 0.75rem; /* text-xs */
+    color: #e5e7eb; /* text-gray-200 */
+    font-family: monospace;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* --- --- --- --- --- --- --- --- --- --- */
+/* --- ¡NUEVO! Estilos del Editor 3D --- */
+/* --- --- --- --- --- --- --- --- --- --- */
+/* body { font-family: 'Inter', sans-serif; } // Redundante, ya está en el body de editorcreador */
+/* Estilos para los sliders */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: #d1d5db; /* gray-300 */
+    border-radius: 9999px;
+    outline: none;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #3b82f6; /* blue-500 */
+    border-radius: 50%;
+    cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #3b82f6; /* blue-500 */
+    border-radius: 50%;
+    cursor: pointer;
+}
+/* Resaltar parte seleccionada en la lista */
+#part-list .selected {
+    background-color: #3b82f6; /* blue-500 */
+    color: white;
+}
+
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- */
+/* --- ¡NUEVO! Estilos para la Galería de Assets (SVG/3D) --- */
+/* --- --- --- --- --- --- --- --- --- --- --- --- --- */
+
+/* Estilos para las sub-pestañas de assets */
+.asset-tab-btn[aria-selected="true"] {
+    border-color: #f97316; /* border-orange-500 */
+    color: #fb923c; /* text-orange-400 */
+    font-weight: 600;
+}
+.asset-tab-btn:not([aria-selected="true"]) {
+    border-color: transparent;
+    color: #9ca3af; /* text-gray-400 */
+}
+.asset-tab-btn:hover:not([aria-selected="true"]) {
+    color: #e5e7eb; /* text-gray-200 */
+    border-color: #4b5563; /* border-gray-500 */
+}
+
+/* Estilos para las tarjetas de preview de SVG */
+.svg-preview-card {
+    background-color: #374151; /* bg-gray-700 */
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #4b5563; /* border-gray-600 */
+}
+.svg-preview-wrapper {
+    width: 100%;
+    height: 120px;
+    background-color: #fff; /* Fondo blanco para SVGs */
+    border-radius: 0.375rem; /* rounded-md */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem;
+}
+.svg-preview-wrapper svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.svg-preview-label {
+    font-family: monospace;
+    font-size: 0.75rem; /* text-xs */
+    color: #9ca3af; /* text-gray-400 */
+    word-break: break-all;
+    text-align: center;
+}
+
+/* Estilos para las tarjetas de preview de Modelos 3D */
+.model-3d-preview-card {
+    background-color: #374151; /* bg-gray-700 */
+    border-radius: 0.5rem; /* rounded-lg */
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #4b5563; /* border-gray-600 */
+    overflow: hidden; /* Contener el canvas */
+}
+.model-3d-preview-canvas {
+    width: 100%;
+    height: 150px;
+    background-color: #1f2937; /* bg-gray-800 */
+    cursor: move; /* Indicar interactividad */
+}
+.model-3d-preview-label {
+    padding: 0.25rem 0.5rem; /* py-1 px-2 */
+    font-family: monospace;
+    font-size: 0.75rem; /* text-xs */
+    color: #9ca3af; /* text-gray-400 */
+    text-align: center;
+    word-break: break-all;
+}

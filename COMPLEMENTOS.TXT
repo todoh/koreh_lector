@@ -1,0 +1,174 @@
+50 Ideas de Componentes para Entidades
+Aquí tienes una lista expandida de 50 componentes que puedes añadir a tu sistema de Entidad-Componente (ECS) para crear mecánicas de juego más complejas y ricas.
+Categoría: Combate y Estadísticas
+Componentes esenciales para un sistema de combate y progresión.
+StatsVitales
+Propósito: Almacena los atributos de salud y energía de una entidad.
+Propiedades: { "vidaActual": 100, "vidaMaxima": 100, "energiaActual": 50, "energiaMaxima": 50 }
+Notas: Reemplaza o expande tu HealthComponent para incluir energía (stamina).
+CombatStats
+Propósito: Define las estadísticas de combate de una entidad.
+Propiedades: { "ataqueBase": 10, "defensaBase": 5, "velocidadAtaque": 1.5, "rangoAtaque": 1.5, "probCritico": 0.05 }
+Notas: Se usa junto con StatsVitales para calcular el daño.
+FactionComponent
+Propósito: Define a qué facción pertenece la entidad para la IA.
+Propiedades: { "faccion": "MONSTRUO", "aliados": ["MONSTRUO"], "enemigos": ["JUGADOR", "ALDEANO"] }
+EquipmentComponent
+Propósito: Almacena las entidades (items equipados) que lleva un jugador o NPC.
+Propiedades: { "arma": "uid_espada", "pecho": "uid_armadura", "herramienta": "uid_pico", "cabeza": null }
+LootTable
+Propósito: Define qué items suelta una entidad al morir.
+Propiedades: { "items": [ { "itemId": "PIEDRA", "min": 1, "max": 3, "probabilidad": 0.8 }, { "itemId": "ESPADA_HIERRO", "min": 1, "max": 1, "probabilidad": 0.05 } ] }
+DamageOverTime
+Propósito: Aplica daño o curación en el tiempo (ej. veneno, fuego, regeneración).
+Propiedades: { "tipo": "VENENO", "danoPorTick": 2, "duracionMs": 5000, "tickRateMs": 1000, "tiempoRestante": 5000 }
+Projectile
+Propósito: Marca una entidad como un proyectil (flecha, bola de fuego).
+Propiedades: { "dano": 10, "velocidad": 300, "propietarioUID": "uid_jugador", "impacto": "DESTRUIR", "fuerzaEmpuje": 50 }
+BuffComponent (Nuevo)
+Propósito: Aplica mejoras o perjuicios temporales a las estadísticas.
+Propiedades: { "efectos": [ { "stat": "ataqueBase", "valor": 10, "duracionMs": 30000 }, { "stat": "defensaBase", "valor": -5, "duracionMs": 15000 } ], "tiempoRestante": 30000 }
+AggroTable (Nuevo)
+Propósito: Gestiona la "amenaza" o "aggro" para que la IA de combate sepa a quién atacar.
+Propiedades: { "objetivos": [ { "uid": "uid_jugador", "amenaza": 150 }, { "uid": "uid_npc_aliado", "amenaza": 50 } ] }
+BlockComponent (Nuevo)
+Propósito: Permite a una entidad (jugador o NPC) bloquear ataques.
+Propiedades: { "estaBloqueando": false, "reduccionDano": 0.75, "costeEstamina": 10, "anguloBloqueo": 90 }
+Categoría: Supervivencia y Estado
+Componentes para mecánicas de supervivencia como hambre, sed o efectos de estado.
+NeedsComponent
+Propósito: Maneja las necesidades básicas de supervivencia.
+Propiedades: { "hambre": 100, "hambreMaxima": 100, "sed": 100, "sedMaxima": 100, "tasaConsumo": 0.1 }
+Consumable
+Propósito: Define los efectos de un item cuando se consume (usado en items.json, pero aplicado a la entidad del jugador).
+Propiedades: { "efectos": [ { "tipo": "CURAR_VIDA", "cantidad": 20 }, { "tipo": "RESTAURAR_HAMBRE", "cantidad": 30 } ] }
+StatusEffectTrigger
+Propósito: Define qué efecto de estado (ej. veneno) aplica esta entidad al atacar o ser consumida.
+Propiedades: { "efecto": "VENENO", "probabilidad": 0.3, "duracionMs": 3000 }
+StaminaComponent
+Propósito: Gestiona la estamina para correr, saltar o ataques fuertes.
+Propiedades: { "staminaActual": 100, "staminaMaxima": 100, "tasaRecuperacion": 10, "costeCorrer": 5 }
+TemperatureComponent (Nuevo)
+Propósito: Maneja la temperatura corporal y los efectos de hipotermia o hipertermia.
+Propiedades: { "temperaturaActual": 37, "tasaCambio": 0.01, "tempAmbiente": 20, "resistenciaFrio": 5, "resistenciaCalor": 5 }
+WetnessComponent (Nuevo)
+Propósito: Maneja qué tan mojada está la entidad (afecta la temperatura).
+Propiedades: { "humedad": 0.0, "maxHumedad": 100, "tasaSecado": 0.1 }
+SleepComponent (Nuevo)
+Propósito: Maneja la necesidad de dormir (fatiga).
+Propiedades: { "fatiga": 0, "fatigaMaxima": 100, "tasaAumento": 0.05 }
+Categoría: Interacción Avanzada
+Componentes para interacciones más complejas que InteractableResource.
+ContainerComponent
+Propósito: Permite a una entidad (ej. cofre) almacenar items.
+Propiedades: { "capacidad": 12, "inventario": [ null, { "itemId": "PIEDRA", "cantidad": 20 }, null, ... ] }
+Notas: InteractableMenu podría abrir la UI de este contenedor.
+Pickupable
+Propósito: Para items en el suelo que requieren un clic para ser recogidos (a diferencia de Collectible que es automático).
+Propiedades: { "itemId": "ESPADA_HIERRO", "cantidad": 1 }
+LockComponent
+Propósito: Para puertas o cofres que requieren una llave.
+Propiedades: { "estaBloqueado": true, "llaveRequerida": "LLAVE_COFRE_ORO", "nivelCerradura": 10 }
+BedComponent
+Propósito: Permite al jugador dormir para pasar la noche y establecer un punto de aparición.
+Propiedades: { "esPuntoDeSpawn": true, "ocupadoPorUID": null }
+LightSource
+Propósito: Emite luz (para antorchas, fogatas, etc.).
+Propiedades: { "intensidad": 1.0, "color": "#FFDDAA", "radio": 150, "parpadeo": true }
+Notas: El motor 3D (engine_3d.js) necesitaría leer esto para crear un PointLight.
+Repairable (Nuevo)
+Propósito: Para items (en items.json) o estructuras (entidades) que pueden ser reparadas.
+Propiedades: { "integridad": 50, "integridadMaxima": 100, "itemReparacion": "MADERA", "cantidadReparacion": 10 }
+Socketable (Nuevo)
+Propósito: Para items que tienen ranuras (ej. armadura con gemas).
+Propiedades: { "ranuras": [ { "tipo": "GEMA_ROJA", "itemUID": null }, { "tipo": "GEMA_AZUL", "itemUID": "uid_gema_safiro" } ] }
+Sittable (Nuevo)
+Propósito: Permite al jugador/NPC sentarse en esta entidad (silla, banco).
+Propiedades: { "puntoSilla": { "x": 0, "y": 20, "z": 0 }, "ocupadoPorUID": null }
+Fishable (Nuevo)
+Propósito: Marca una zona (entidad de trigger) como un lugar donde se puede pescar.
+Propiedades: { "lootTable": "PECES_RIO", "cooldownMs": 5000, "requiereItem": "CANA_PESCAR" }
+Categoría: IA Avanzada
+Expande el MovementAI básico para comportamientos más complejos.
+CombatAI
+Propósito: Define el comportamiento de combate de una entidad.
+Propiedades: { "estado": "PASIVO", "rangoAgresion": 200, "rangoPersecucion": 400, "ataqueUID": "uid_ataque_mordisco" }
+Notas: Usaría FactionComponent para encontrar enemigos.
+PatrolComponent
+Propósito: Define una ruta de patrulla para un MovementAI.
+Propiedades: { "waypoints": [ { "x": 100, "y": 200 }, { "x": 300, "y": 250 } ], "indiceActual": 0, "modo": "BUCLE" }
+FleeComponent
+Propósito: Define cuándo una entidad (ej. ciervo) debe huir.
+Propiedades: { "huirBajoVida": 0.3, "huirDeFaccion": ["JUGADOR"], "rangoHuida": 300 }
+Tameable
+Propósito: Permite al jugador domesticar a una entidad (animal).
+Propiedades: { "itemRequerido": "PAN", "probabilidadExito": 0.25, "estaDomesticado": false, "propietarioUID": null }
+FollowComponent
+Propósito: Para mascotas o compañeros. Hace que la IA siga a una entidad.
+Propiedades: { "entidadASeguirUID": "uid_jugador", "distanciaMinima": 100, "distanciaMaxima": 500 }
+InventoryAI (Nuevo)
+Propósito: Permite a un NPC gestionar su propio inventario (recoger, soltar, equipar).
+Propiedades: { "maxCapacidad": 10, "itemsPrioritarios": ["COMIDA", "ARMA"], "inventario": [ ... ] }
+SocialAI (Nuevo)
+Propósito: Define cómo un NPC interactúa con otros NPCs (requiere MovementAI y InteractableDialogue).
+Propiedades: { "relaciones": { "uid_npc_esposa": "AMOR", "uid_npc_tendero": "AMISTAD" }, "personalidad": "GRUNON", "necesidadSocial": 50 }
+WorkAI (Nuevo)
+Propósito: Define una tarea o trabajo para un NPC (ej. leñador, granjero).
+Propiedades: { "tarea": "TALAR_ARBOL", "objetivoAreaUID": "uid_zona_bosque", "herramientaRequerida": "HACHA", "horario": { "inicio": 8, "fin": 17 } }
+Categoría: Lógica de Mundo y Eventos
+Componentes que interactúan con el mundo o disparan eventos.
+SpawnerComponent
+Propósito: Genera otras entidades en un área.
+Propiedades: { "entidadKey": "ORCO", "radio": 150, "maximoEntidades": 3, "cooldownMs": 10000, "entidadesActuales": 0 }
+TriggerComponent
+Propósito: Activa un evento cuando el jugador entra en un radio.
+Propiedades: { "radio": 100, "evento": "MOSTRAR_DIALOGO_CUEVA", "soloUnaVez": true, "yaActivado": false, "activadoPor": ["JUGADOR"] }
+QuestGiver
+Propósito: Marca a un NPC como alguien que da misiones.
+Propiedades: { "questID": "MATAR_ORCOS", "dialogoInicio": "¡Ayuda! ¡Los orcos...", "dialogoFin": "¡Gracias!" }
+QuestObjective
+Propósito: Marca a una entidad (o área) como el objetivo de una misión.
+Propiedades: { "questID": "MATAR_ORCOS", "tipoObjetivo": "MATAR", "cantidadRequerida": 5 }
+Ownership
+Propósito: Define quién es el propietario de una entidad (cama, cofre, puerta).
+Propiedades: { "propietarioUID": "uid_jugador", "esPublico": false }
+ShopComponent (Nuevo)
+Propósito: Define los items que vende un NPC (requiere InteractableMenu).
+Propiedades: { "itemsEnVenta": [ { "itemId": "PAN", "precio": 5, "stock": 20 }, { "itemId": "ESPADA_HIERRO", "precio": 150, "stock": 1 } ] }
+Destructible (Nuevo)
+Propósito: Para terreno (rocas, árboles grandes) que se destruye en etapas.
+Propiedades: { "salud": 100, "saludMaxima": 100, "etapa": 1, "siguienteEtapaKey": "ARBOL_TALADO", "lootTable": "LOOT_ARBOL" }
+Notas: Reemplaza InteractableResource para minería/tala más compleja.
+Persistent (Nuevo)
+Propósito: Marca una entidad para que su estado se guarde siempre, incluso si el chunk se descarga (ej. un cofre de jugador).
+Propiedades: { "guardarSiempre": true }
+Categoría: Efectos y Utilidad
+Componentes para efectos visuales, de sonido y otros.
+SoundEmitter
+Propósito: Asocia sonidos a eventos de la entidad.
+Propiedades: { "sonidoPaso": "paso_hierba", "sonidoAtaque": "espada_swing", "sonidoMuerte": "grito_orco", "sonidoAmbiente": "viento_cueva" }
+ParticleEmitter
+Propósito: Emite efectos de partículas (requeriría un sistema de partículas en engine_3d.js).
+Propiedades: { "tipoParticula": "HUMO", "tasaEmision": 10, "activo": true, "offset": { "x": 0, "y": 50, "z": 0 } }
+Teleporter
+Propósito: Teletransporta al jugador a otro punto al interactuar.
+Propiedades: { "targetX": 1500, "targetY": 3200, "targetZ": 0, "efecto": "DESTELLO" }
+FloatingText
+Propósito: (Componente temporal) Muestra texto flotante (ej. daño "-10", "Curado +5").
+Propiedades: { "texto": "-10", "color": "#FF0000", "tiempoRestanteMs": 1000 }
+AudioReverbZone (Nuevo)
+Propósito: (Entidad de Trigger) Aplica un efecto de eco a los sonidos dentro de ella.
+Propiedades: { "radio": 300, "preset": "CUEVA" }
+TimerComponent (Nuevo)
+Propósito: Un temporizador genérico que envía un evento al terminar.
+Propiedades: { "duracionMs": 10000, "tiempoRestante": 10000, "eventoAlTerminar": "PUERTA_ABRIR", "bucle": false }
+Categoría: Componentes Físicos y de Movimiento (Nueva)
+Componentes para movimiento no estándar y física.
+PhysicsBody (Nuevo)
+Propósito: Aplica físicas realistas (gravedad, impulso) a una entidad.
+Propiedades: { "masa": 10, "tipoCuerpo": "DINAMICO", "rebote": 0.2, "gravedad": true }
+Notas: Útil para rocas que caen, ragdolls o físicas de vehículos.
+Climbable (Nuevo)
+Propósito: Permite al jugador escalar esta entidad (ej. escalera, enredadera).
+Propiedades: { "velocidadEscalada": 50 }
+Notas: El sistema del jugador necesitaría detectar la colisión con esto para cambiar el modo de movimiento.

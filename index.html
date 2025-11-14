@@ -3,713 +3,785 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visor/Editor de Partidas (Online)</title>
+    <title>Editor de Proyecto</title>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>   
-
-    <style>
-        canvas {
-            image-rendering: pixelated;
-            image-rendering: -moz-crisp-edges;
-            image-rendering: -webkit-crisp-edges;
-            background-color: #1f2937; /* bg-gray-800 */
-            cursor: grab;
-        }
-        #sidebar {
-            position: sticky;
-            top: 0;
-            max-height: 100vh;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles2.css">
 </head>
-<body class="bg-gray-900 text-gray-200 font-sans">
+<body class="bg-gray-900 text-gray-200 font-sans p-4 md:p-8">
 
-    <div class="flex">
-        <aside id="sidebar" class="w-80 md:w-96 p-4 bg-gray-900 border-r border-gray-700 overflow-y-auto flex-shrink-0">
-            <h1 class="text-2xl font-bold text-cyan-400 mb-4">Visor de Partidas</h1>
+    <button type="button" id="inventory-editor-btn" class="hidden text-sm font-semibold py-2 px-4 rounded-lg border-0
+        bg-purple-600 text-white hover:bg-purple-700 cursor-pointer transition-all duration-150 shadow-lg" 
+        style="position: fixed; top: 5px; right: 5px; z-index: 10;">
+        Editar Inventario Inicial
+    </button>
+    <div class="max-w-6xl mx-auto">
+        
+        <section id="root-folder-section" class="mb-12">
+             
+            <button type="button" id="select-root-btn" class="   text-lg font-semibold   file:mr-4 py-3 px-5 rounded-lg border-0
+                bg-blue-600 text-white hover:bg-blue-700 cursor-pointer transition-all duration-150 shadow-lg" style="position: fixed; top: 5px; left: 5px;" >
+                Seleccionar Carpeta Raíz del Proyecto
+            </button>
+            <p id="folder-status" class="text-gray-500 text-sm mt-2" style="display: none;"  ></p>
+        </section>
+
+        <div id="main-editor-container" class="hidden space-y-12">
+
+            <section id="json-editor-section">
+                 
+                
+                <div class="mb-4 border-b border-gray-700">
+                    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                        <button type="button" id="tab-terrain" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-cyan-500 text-cyan-400" aria-selected="true">
+                            Terrenos
+                        </button>
+                        <button type="button" id="tab-entity" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500" aria-selected="false">
+                            Entidades
+                        </button>
+                        <button type="button" id="tab-biome" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500" aria-selected="false">
+                            Biomas
+                        </button>
+                        <button type="button" id="tab-items" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500" aria-selected="false">
+                            Objetos
+                        </button>
+                        <button type="button" id="tab-crafting" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500" aria-selected="false">
+                            Crafteos
+                        </button>
+                        <button type="button" id="tab-assets" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500" aria-selected="false">
+                            Galeria
+                        </button>
+                        <button type="button" id="tab-ia" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500" aria-selected="false">
+                            ⚡ IA REALISTA
+                        </button>
+                  
+                        <button type="button" id="tab-ia3d" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500" aria-selected="false">
+                            ⚡ IA SVG y 3D 
+                        </button>
+                      
+                        <button type="button" id="tab-editor3d" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500" aria-selected="false">
+                            📦 Editor 3D
+                        </button>
+                    </nav>
+                </div>
+
+                <div id="tab-content-terrain" class="tab-content">
+                    <div id="json-editor-container-terrain" class="bg-gray-800 rounded-lg shadow-xl p-4 md:p-6">
+                        <div class="flex justify-between items-center gap-3 mb-4">
+                            <h3 class="text-lg font-semibold text-gray-300">Editando Terreno (Galería)</h3>
+                            <div class="flex gap-3">
+                                <button type="button" id="add-new-terrain-item-btn" class="json-editor-btn bg-blue-600 hover:bg-blue-700">
+                                    + Añadir Nuevo
+                                </button>
+                                <button type="button" id="save-terrain-btn" class="json-editor-btn bg-green-600 hover:bg-green-700">
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </div>
+                        <div id="gallery-container-terrain" class="gallery-container">
+                            <p class="text-gray-500">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-content-entity" class="tab-content hidden">
+                    <div id="json-editor-container-entity" class="bg-gray-800 rounded-lg shadow-xl p-4 md:p-6">
+                         <div class="flex justify-between items-center gap-3 mb-4">
+                            <h3 class="text-lg font-semibold text-gray-300">Editando Entidades (Galería)</h3>
+                            <div class="flex gap-3">
+                                <button type="button" id="add-new-entity-item-btn" class="json-editor-btn bg-blue-600 hover:bg-blue-700">
+                                    + Añadir Nuevo
+                                </button>
+                                <button type="button" id="save-entity-btn" class="json-editor-btn bg-green-600 hover:bg-green-700">
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </div>
+                        <div id="gallery-container-entity" class="gallery-container">
+                            <p class="text-gray-500">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-content-biome" class="tab-content hidden">
+                    <div class="bg-gray-800 rounded-lg shadow-xl p-4 md:p-6 space-y-8">
+                        <div>
+                            <div class="flex justify-between items-center gap-3 mb-4">
+                                <h3 class="text-lg font-semibold text-gray-300">Frecuencia de Biomas (BIOME_WEIGHTS)</h3>
+                            </div>
+                            <div id="biome-weights-list" class="json-raw-editor-container">
+                                <p class="text-gray-500">Cargando pesos...</p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center gap-3 mb-4">
+                                <h3 class="text-lg font-semibold text-gray-300">Definiciones de Biomas (Galería)</h3>
+                                <div class="flex gap-3">
+                                    <button type="button" id="add-new-biome-item-btn" class="json-editor-btn bg-blue-600 hover:bg-blue-700">
+                                        + Añadir Nuevo
+                                    </button>
+                                    <button type="button" id="save-biome-btn" class="json-editor-btn bg-green-600 hover:bg-green-700">
+                                        Guardar Cambios
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="gallery-container-biome" class="gallery-container">
+                                <p class="text-gray-500">Cargando biomas...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="tab-content-items" class="tab-content hidden">
+                    <div id="json-editor-container-items" class="bg-gray-800 rounded-lg shadow-xl p-4 md:p-6">
+                         <div class="flex justify-between items-center gap-3 mb-4">
+                            <h3 class="text-lg font-semibold text-gray-300">Editando Items (Galería)</h3>
+                            <div class="flex gap-3">
+                                <button type="button" id="add-new-item-btn" class="json-editor-btn bg-blue-600 hover:bg-blue-700">
+                                    + Añadir Nuevo
+                                </button>
+                                <button type="button" id="save-items-btn" class="json-editor-btn bg-green-600 hover:bg-green-700">
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </div>
+                        <div id="gallery-container-items" class="gallery-container">
+                            <p class="text-gray-500">Cargando items...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="tab-content-crafting" class="tab-content hidden">
+                    <div class="bg-gray-800 rounded-lg shadow-xl p-4 md:p-6 space-y-8">
+                        <div class="flex justify-between items-center gap-3">
+                            <h3 class="text-lg font-semibold text-gray-300">Editando Recetas de Crafteo</h3>
+                            <div class="flex-grow"></div> <button type="button" id="add-new-crafting-table-btn" class="json-editor-btn bg-cyan-600 hover:bg-cyan-700">
+                                + Añadir Nueva Mesa
+                            </button>
+                            <button type="button" id="save-crafting-btn" class="json-editor-btn bg-green-600 hover:bg-green-700">
+                                Guardar Todos los Cambios
+                            </button>
+                        </div>
+                        <div id="crafting-editor-container" class="space-y-8">
+                            <p class="text-gray-500">Cargando mesas de crafteo...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- --- INICIO: PESTAÑA DE GALERÍA MODIFICADA --- -->
+                <div id="tab-content-assets" class="tab-content hidden">
+                    <div class="bg-gray-800 rounded-lg shadow-xl p-4 md:p-6 space-y-8">
+                        <!-- Navegación de Sub-pestañas -->
+                        <div class="mb-4 border-b border-gray-700">
+                            <nav class="-mb-px flex space-x-8" aria-label="Asset Tabs">
+                                <button type="button" id="asset-tab-btn-png" class="asset-tab-btn whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm" aria-selected="true">
+                                    Imágenes (PNG)
+                                </button>
+                                <button type="button" id="asset-tab-btn-svg" class="asset-tab-btn whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm" aria-selected="false">
+                                    Vectores (SVG)
+                                </button>
+                                <button type="button" id="asset-tab-btn-3d" class="asset-tab-btn whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm" aria-selected="false">
+                                    Modelos (3D)
+                                </button>
+                            </nav>
+                        </div>
             
-            <div>
-                <label for="file-input" class="block mb-2 text-sm font-medium text-gray-300">Cargar partida local (.json)</label>
-                <input type="file" id="file-input" accept=".json,application/json" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
-            </div>
-
-            <div id="cloud-panel" class="mt-6">
-                <h2 class="text-lg font-semibold text-cyan-400 mb-2">Cargar desde la Nube</h2>
-                <div class="bg-gray-800 p-3 rounded-md space-y-2">
-                    <div>
-                        <label for="firebase-config-input" class="block mb-1 text-sm font-medium text-gray-400">Pegar `firebaseConfig`</label>
-                        <textarea id="firebase-config-input" rows="3" class="w-full p-2 bg-gray-900 rounded-md text-sm text-gray-300" placeholder="{ apiKey: ... }"></textarea>
+                        <!-- Contenido Pestaña PNG (Contenido Original) -->
+                        <div id="asset-tab-content-png" class="asset-tab-content">
+                            <section id="game-assets-section">
+                                <div class="flex justify-between items-center gap-3 mb-4">
+                                    <div>
+                                        <h2 class="text-2xl font-semibold text-white mb-3">Assets de Imágenes (.png)</h2>
+                                        <p class="text-gray-400">
+                                            Haz clic en una imagen para editarla. Se encuentran en /assets
+                                        </p>
+                                    </div>
+                                    <button type="button" id="upload-new-asset-btn" class="json-editor-btn bg-green-600 hover:bg-green-700 whitespace-nowrap">
+                                        Subir PNGs a /assets
+                                    </button>
+                                </div>
+            
+                                <div id="asset-grid-container" class="asset-grid-container">
+                                    <p class="text-gray-500">Cargando assets...</p>
+                                </div>
+                            </section>
+                        </div>
+            
+                        <!-- Contenido Pestaña SVG -->
+                        <div id="asset-tab-content-svg" class="asset-tab-content hidden">
+                            <section id="svg-assets-section">
+                                <h2 class="text-2xl font-semibold text-white mb-3">Assets Vectoriales (/SVG)</h2>
+                                <div id="svg-grid-container" class="asset-grid-container">
+                                    <p class="text-gray-500">Cargando assets SVG...</p>
+                                </div>
+                            </section>
+                        </div>
+            
+                        <!-- Contenido Pestaña 3D -->
+                        <div id="asset-tab-content-3d" class="asset-tab-content hidden">
+                            <section id="3d-assets-section">
+                                <h2 class="text-2xl font-semibold text-white mb-3">Modelos 3D (/assets/3d)</h2>
+                                <p class="text-gray-400 mb-4">Haz clic y arrastra en una previsualización para rotar el modelo.</p>
+                                <div id="3d-grid-container" class="asset-grid-container">
+                                    <p class="text-gray-500">Cargando modelos 3D...</p>
+                                </div>
+                            </section>
+                        </div>
                     </div>
-                    <div>
-                        <label for="firebase-profile-name" class="block mb-1 text-sm font-medium text-gray-400">Nombre de Perfil (Opcional)</label>
-                        <input type="text" id="firebase-profile-name" class="w-full p-2 bg-gray-900 rounded-md text-sm text-gray-300" placeholder="Ej: Paco (para stats y pos.)">
-                    </div>
-                    <button id="firebase-load-btn" class="w-full bg-cyan-600 text-white rounded-md text-sm font-medium hover:bg-cyan-700 px-3 py-2">
-                        Cargar Mapa de Firebase
-                    </button>
-                    <div id="firebase-message-panel" class="text-sm text-gray-400">Introduce tu config para conectar.</div>
                 </div>
-            </div>
+                <!-- --- FIN: PESTAÑA DE GALERÍA MODIFICADA --- -->
 
-            <!-- ¡NUEVO! Filtro de Nivel Z -->
-            <div id="z-level-panel" class="mt-6">
-                <h2 class="text-lg font-semibold text-cyan-400 mb-2">Nivel Z</h2>
-                <div class="flex space-x-2">
-                    <button id="z-level-down" class="flex-1 bg-gray-700 text-white rounded-md text-sm font-medium hover:bg-gray-600 px-3 py-2">-</button>
-                    <input type="number" id="z-level-input" value="0" class="w-16 p-2 text-center bg-gray-900 rounded-md text-sm text-gray-300">
-                    <button id="z-level-up" class="flex-1 bg-gray-700 text-white rounded-md text-sm font-medium hover:bg-gray-600 px-3 py-2">+</button>
-                </div>
-            </div>
 
-            <div id="stats-panel" class="mt-6 hidden">
-                <h2 class="text-lg font-semibold text-cyan-400 mb-2">Estado del Jugador</h2>
-                <div id="stats-content" class="text-sm space-y-1 bg-gray-800 p-3 rounded-md">
+                <div id="tab-content-ia" class="tab-content hidden">
+                    <div id="ia-generator-container" class="bg-gray-800 rounded-lg shadow-xl p-4 md:p-6 space-y-6">
+                        <p class="text-gray-500">Cargando UI del generador IA...</p>
                     </div>
-            </div>
-
-            <div id="legend-panel" class="mt-6">
-                <h2 class="text-lg font-semibold text-cyan-400 mb-2">Leyenda</h2>
-                <div id="legend-content" class="grid grid-cols-2 gap-2 text-sm">
-                    </div>
-            </div>
-
-            <div id="editor-panel" class="mt-6 hidden">
-                <h2 class="text-lg font-semibold text-cyan-400 mb-2">Editor de Tile</h2>
-                <div class="bg-gray-800 p-3 rounded-md space-y-2">
-                    <p id="selected-tile-info" class="text-sm text-gray-400">Haz clic en un tile del mapa para editar...</p>
-                    <select id="tile-type-select" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-md block w-full p-2.5">
-                        </select>
-                    <button id="download-button" class="w-full bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 px-3 py-2">
-                        Descargar Partida Editada
-                    </button>
                 </div>
-            </div>
-        </aside>
 
-        <main class="flex-1 h-screen overflow-auto" id="main-content">
-            <div id="map-container" class="w-full h-full p-4">
-                <canvas id="map-canvas"></canvas>
-                <p id="loading-message" class="text-gray-400 text-center p-10">Por favor, carga un archivo de guardado (local o nube) para ver el mapa.</p>
+                <!-- ================== -->
+                <!--  NUEVO CONTENEDOR  -->
+                <!-- ================== -->
+                <div id="tab-content-ia3d" class="tab-content hidden">
+                    <!-- El contenido de SVG MAKER/index.html se pega aquí -->
+                    
+                    <!-- Contenedor principal -->
+                    <div class="container">
+                        <div class="main-content">
+
+                            <!-- Encabezado -->
+                            <header>
+                                <h1>Generador de Dibujos SVG</h1>
+                                <p>Crea y mejora arte vectorial 2D y 3D con IA.</p>
+                            </header>
+
+                            <!-- Layout de dos columnas -->
+                            <div class="layout-container">
+
+                                <!-- Columna de Controles (Izquierda) -->
+                                <div class="controls-column">
+                                    
+                                    <!-- Sección de API Key -->
+                                 
+
+                                    <!-- Sección de Modelo -->
+                                    <div class="card">
+                                        <label for="modelSelect" class="label">Modelo de IA (para 2D)</label>
+                                        <select id="modelSelect" class="select-field">
+                                            <option value="gemini-2.5-flash-lite-preview-09-2025">2.5 Flash Lite</option>
+                                            <option value="gemini-2.5-flash-preview-09-2025" selected>2.5 Flash</option>
+                                            <option value="gemini-2.5-pro">2.5 Pro</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Sección de Generación -->
+                                    <div class="card">
+                                        <h2 class="card-title">1. Generar Nuevo Dibujo (2D)</h2>
+                                        <label for="promptInput" class="label">Prompt Principal</label>
+                                        <textarea id="promptInput" rows="3" class="textarea-field" placeholder="Ej: Un astronauta en la luna, estilo minimalista"></textarea>
+                                        
+                                        <!-- NOTA: El botón "Generar Realista" se mantiene, -->
+                                        <!-- pero generador_main.js lo conectará al generadorrealista.js de editorcreador -->
+                                        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.75rem;">
+                                            <button id="generateButton" class="btn btn-primary">
+                                                Añadir a la cola (Generar SVG)
+                                            </button>
+                                            <button id="generateRealisticButton" class="btn btn-purple">
+                                                Añadir a la cola (Generar Realista)
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Columna de Vista Previa (Derecha) -->
+                                <div class="preview-column">
+                                    <h2 class="card-title">Vista Previa</h2>
+                                    
+                                    <div id="previewArea">
+                                      
+                                    </div>
+
+                                    <!-- Mensaje de estado -->
+                                    <div id="statusMessage" class="status-message"></div>
+
+                                    <!-- Sección de Acciones (para 2D) -->
+                                    <div id="actionsSection" class="actions-container hidden">
+                                        <button id="copySvgButton" class="btn btn-dark">
+                                            Copiar SVG
+                                        </button>
+                                        <button id="donwloadSvgButton" class="btn btn-success">
+                                            Descargar
+                                        </button>
+                                        <button id="deleteShapeButton" class="btn btn-danger">
+                                            Eliminar Forma
+                                        </button>
+                                    </div>
+
+                                    <!-- SECCIÓN DE CONTROLES 3D -->
+                                    <div id="controls3DSection" class="card hidden">
+                                        <h3 class="card-title" style="font-size: 1rem; margin-bottom: 0.5rem;">Controles 3D</h3>
+                                        <label for="prompt3D" class="label">Prompt de Generación/Edición 3D:</label>
+                                        <textarea id="prompt3D" rows="2" class="textarea-field" placeholder="Ej: Hazlo grueso y de color rojo metálico"></textarea>
+                                        
+                                        <div class="actions-3d-buttons">
+                                            <button id="generate3DButton" class="btn btn-primary">
+                                                Generar Modelo 3D
+                                            </button>
+                                            <button id="edit3DButton" class="btn btn-secondary">
+                                                Editar Modelo 3D
+                                            </button>
+                                            <button id="copy3DModelButton" class="btn btn-dark">
+                                                Copiar GLTF (JSON)
+                                            </button>
+                                            <button id="download3DModelButton" class="btn btn-purple">
+                                                Descargar GLTF
+                                            </button>
+                                            <button id="exportPlaneliteButton" class="btn btn-success" title="Exportar en el formato simple de 3 claves (geometries, materials, positions)">
+                                                Exportar JSON PLANELITE
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Controles Manuales (para 2D) -->
+                                    <div id="manualControls" class="card hidden">
+                                        <h3 class="card-title" style="font-size: 1rem; margin-bottom: 0.5rem;">Controles Manuales (2D)</h3>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+                                            <button class="btn btn-secondary" data-action="zoom-in">Zoom +</button>
+                                            <button class="btn btn-secondary" data-action="pan-up">Arriba</button>
+                                            <button class="btn btn-secondary" data-action="zoom-out">Zoom -</button>
+                                            <button class="btn btn-secondary" data-action="pan-left">Izquierda</button>
+                                            <button class="btn btn-secondary" data-action="reset">Reset</button>
+                                            <button class="btn btn-secondary" data-action="pan-right">Derecha</button>
+                                            <span></span> <button class="btn btn-secondary" data-action="pan-down">Abajo</button>
+                                            <span></span> 
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Contenedor del código SVG (para 2D) -->
+                                    <div id="svgCodeWrapper" class="hidden">
+                                        <label class="label">Código SVG (solo lectura)</label>
+                                        <pre id="svgCodeContainer"><code id="svgCode">...</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nueva Sección de Galería -->
+                            <div id="gallerySection" class="card gallery-container">
+                                <div class="gallery-header">
+                                    <h2 class="card-title">Mi Galería (Persistente)</h2>
+                                    
+                                    <!-- --- ¡BOTONES MODIFICADOS! --- -->
+                                    <div class="flex flex-wrap gap-2">
+                                        <input type="file" id="uploadGalleryInput" accept=".json" class="hidden">
+                                        <label for="uploadGalleryInput" id="uploadGalleryLabel" class="btn btn-success">
+                                            Cargar (JSON)
+                                        </label>
+                                        <button id="saveGalleryButton" class="btn btn-primary" title="Guardar la galería actual en ia_gallery.json en la raíz del proyecto">
+                                            Guardar en Proyecto
+                                        </button>
+                                        <button id="downloadGalleryButton" class="btn btn-purple" title="Descargar una copia de la galería a tu PC">
+                                            Descargar Copia (a PC)
+                                        </button>
+                                    </div>
+                                    <!-- --- FIN BOTONES MODIFICADOS --- -->
+
+                                </div>
+                                <div id="galleryGrid" class="gallery-grid">
+                                    <!-- Los items de la galería se insertarán aquí -->
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Loader Overlay (Específico de este módulo) -->
+                    <div id="loader" class="loader-overlay hidden">
+                        <div class="loader-content">
+                            <div class="spinner"></div>
+                            <p>Procesando...</p>
+                        </div>
+                    </div>
+
+                    <!-- Modal de Mejora (Específico de este módulo) -->
+                    <div id="improveModal" class="modal-overlay hidden">
+                        <div class="modal-content card">
+                            <h2 class="card-title">Editar Item</h2>
+                            
+                            <label for="modalItemName" class="label">Nombre:</label>
+                            <input type="text" id="modalItemName" class="input-field">
+
+                            <div id="modalImproveSection">
+                                <label for="modalImprovePrompt" class="label">Instrucción de Mejora (2D):</label>
+                                <textarea id="modalImprovePrompt" rows="3" class="textarea-field" placeholder="Ej: Añade más estrellas y un alienígena"></textarea>
+                            </div>
+
+                            <div class="modal-actions">
+                                <button id="modalDuplicate" class="btn btn-dark">Duplicar</button>
+                                <button id="modalDelete" class="btn btn-danger">Eliminar</button>
+                                <button id="modalImproveCancel" class="btn btn-secondary">Cancelar</button>
+                                <button id="modalRenameSave" class="btn btn-dark">Solo Guardar Nombre</button>
+                                <button id="modalImproveConfirm" class="btn btn-primary">Guardar y Mejorar (2D)</button>
+                            </div>
+
+                            <!-- Zona de confirmación de borrado -->
+                            <div id="modalDeleteConfirm" class="modal-delete-confirm hidden">
+                                <p>¿Estás seguro? Esta acción es irreversible.</p>
+                                <button id="modalDeleteConfirmBtn" class="btn btn-danger">Sí, Eliminar</button>
+                                <button id="modalDeleteCancelBtn" class="btn btn-secondary">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ================== -->
+                <!--  FIN NUEVO CONTENEDOR -->
+                <!-- ================== -->
+
+
+                <div id="tab-content-editor3d" class="tab-content hidden">
+                    <div class="bg-gray-900 text-white h-[80vh] flex flex-col overflow-hidden">
+                        <header class="bg-gray-800 p-3 shadow-lg flex justify-between items-center z-10">
+                            <h1 class="text-xl font-bold text-blue-400">Editor de Modelos 3D (JSON) v2.0</h1>
+                            <div class="flex items-center space-x-2">
+                                <label for="model-select" class="text-sm font-medium">Cargar Preset:</label>
+                                <select id="model-select" class="bg-gray-700 border border-gray-600 rounded-md px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="new">-- Nuevo Modelo --</option>
+                                    <option value="ferrari">Ferrari (Cajas)</option>
+                                    <option value="humanoid_box">Humanoid (Cajas)</option>
+                                    <option value="humanoid_real">Humanoid (Real)</option>
+                                </select>
+                            </div>
+                        </header>
+
+                        <div class="flex flex-1 overflow-hidden">
+                            
+                            <aside class="w-1/3 max-w-sm h-full bg-gray-800 p-4 overflow-y-auto shadow-inner flex flex-col space-y-4">
+                                
+                                <div id="global-controls-panel" class="bg-gray-700 rounded-lg p-3 space-y-3">
+                                    <h2 class="text-lg font-semibold">Transformación Global</h2>
+                                    
+                                    <div class="space-y-2">
+                                        <h4 class="text-sm font-medium text-gray-300">Posición (X, Y, Z)</h4>
+                                        <div id="global-position-inputs" class="grid grid-cols-3 gap-2">
+                                            </div>
+
+                                        <h4 class="text-sm font-medium text-gray-300">Rotación (RX, RY, RZ)</h4>
+                                        <div id="global-rotation-inputs" class="grid grid-cols-3 gap-2">
+                                            </div>
+                                        
+                                        <h4 class="text-sm font-medium text-gray-300">Escala (SX, SY, SZ)</h4>
+                                        <div id="global-scale-inputs" class="grid grid-cols-3 gap-2">
+                                            </div>
+                                    </div>
+
+                                    <div class="space-y-2 pt-2 border-t border-gray-600">
+                                        <h4 class="text-sm font-medium text-gray-300">Reescalar por Altura</h4>
+                                        <div class="flex items-center space-x-2">
+                                            <input type="number" id="global-max-height" value="50" class="w-1/2 bg-gray-600 border border-gray-500 rounded-md px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="Altura Máx.">
+                                            <button id="global-apply-height-btn" class="w-1/2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors">
+                                                Aplicar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gray-700 rounded-lg p-3">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h2 class="text-lg font-semibold">Partes del Modelo</h2>
+                                        <button id="add-part-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors">
+                                            Añadir
+                                        </button>
+                                    </div>
+                                    <div id="part-list" class="h-40 bg-gray-800 rounded-md overflow-y-auto border border-gray-600">
+                                        </div>
+                                </div>
+
+                                <div id="property-editor" class="bg-gray-700 rounded-lg p-3 flex-1 space-y-3" style="display: none;">
+                                    <h3 class="text-md font-semibold text-blue-300">Editando: <span id="part-name-label"></span></h3>
+                                    
+                                    <div>
+                                        <label for="part-shape" class="block text-sm font-medium text-gray-300">Tipo de Geometría</label>
+                                        <select id="part-shape" class="w-full bg-gray-600 border border-gray-500 rounded-md px-2 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option value="box">Caja (Box)</option>
+                                            <option value="sphere">Esfera (Sphere)</option>
+                                            <option value="cylinder">Cilindro (Cylinder)</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <h4 class="text-sm font-medium text-gray-300">Parámetros de Geometría</h4>
+                                        <div id="geometry-params-inputs" class="grid grid-cols-2 gap-2">
+                                            </div>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <h4 class="text-sm font-medium text-gray-300">Posición (X, Y, Z)</h4>
+                                        <div id="position-inputs" class="grid grid-cols-3 gap-2">
+                                            </div>
+
+                                        <h4 class="text-sm font-medium text-gray-300">Rotación (RX, RY, RZ)</h4>
+                                        <div id="rotation-inputs" class="grid grid-cols-3 gap-2">
+                                            </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="part-color" class="block text-sm font-medium text-gray-300">Color</label>
+                                            <input type="color" id="part-color" class="w-full h-10 p-0 border-none rounded-md cursor-pointer bg-gray-600">
+                                        </div>
+                                        <div>
+                                            <label for="part-parent" class="block text-sm font-medium text-gray-300">Parent (Padre)</label>
+                                            <select id="part-parent" class="w-full bg-gray-600 border border-gray-500 rounded-md px-2 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                                                </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-300">Textura (Asset)</label>
+                                        <!-- Estructura del selector de imagen (basada en editor_fields.js) -->
+                                        <div class="editor-field" data-field-id="part-texture" data-field-type="image_select">
+                                            <div class="image-selector-input">
+                                                <img id="part-texture-preview" alt="Preview" class="image-selector-preview" src="https://placehold.co/40x40/1f2937/4b5563?text=?">
+                                                <span id="part-texture-key-display" class="image-selector-key-display">(Ninguna)</span>
+                                                <button type="button" id="part-texture-select-btn" class="image-selector-button" data-action="open-image-selector">
+                                                    Seleccionar...
+                                                </button>
+                                            </div>
+                                            <input type="hidden" id="part-texture" value="">
+                                        </div>
+                                    </div>
+
+                                    <button id="remove-part-btn" class="w-full bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                        Eliminar Parte
+                                    </button>
+                                </div>
+
+                                <div class="bg-gray-700 rounded-lg p-3 space-y-2">
+                                    <h2 class="text-lg font-semibold">Importar / Exportar</h2>
+                                    <button id="export-json-btn" class="w-full bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                        Exportar a JSON
+                                    </button>
+
+ <button id="export-jsontogallery-btn" class="w-full bg-orange-600 hover:bg-green-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                        Exportar a Galeria
+                                    </button>
+
+                                    <textarea id="json-io-area" class="w-full h-32 bg-gray-800 text-gray-300 text-xs font-mono rounded-md border border-gray-600 p-2 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Pega aquí el JSON para importar..."></textarea>
+                                    <button id="import-json-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                        Importar desde JSON
+                                    </button>
+                                </div>
+
+                            </aside>
+
+                            <main class="flex-1 h-full relative">
+                                <canvas id="main-canvas" class="w-full h-full block"></canvas>
+                                <div id="loading-overlay" class="absolute inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-20" style="display: none;">
+                                    <div class="text-lg font-medium animate-pulse">Cargando Texturas...</div>
+                                </div>
+                            </main>
+                        </div>
+                    </div>
+                </div>
+                </section>
+        </div> 
+    </div> 
+    
+    <div id="editor-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center flex-shrink-0">
+                <h3 id="modal-title" class="text-2xl font-bold text-cyan-400">Editar Item</h3>
+                <button type="button" id="modal-cancel-btn" class="text-gray-400 hover:text-white text-3xl font-bold">&times;</button>
             </div>
-        </main>
+
+            <div id="modal-form-content" class="modal-body space-y-4">
+                </div>
+
+            <div class="flex justify-end gap-4 flex-shrink-0 border-t border-gray-700 pt-4">
+                <button type="button" id="modal-cancel-btn-2" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-150">
+                    Cancelar
+                </button>
+                <button type="button" id="modal-save-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-150">
+                    Aplicar Cambios
+                </button>
+            </div>
+        </div>
     </div>
 
-    <script>
-        // --- CONSTANTES ---
-        const TILE_SIZE_PX = 8; 
-        const GAME_CHUNK_WIDTH = 60; 
-        const GAME_CHUNK_HEIGHT = 60; 
-        const GAME_TILE_WIDTH = 70; 
-        const GAME_TILE_HEIGHT = 70; 
+    <div id="inventory-editor-modal" class="modal-overlay">
+        <div class="modal-content !max-w-5xl"> <div class="flex justify-between items-center flex-shrink-0">
+                <h3 id="inventory-editor-title" class="text-2xl font-bold text-purple-400">Editor de InventARIO Inicial</h3>
+                <button type="button" id="inventory-editor-cancel-btn" class="text-gray-400 hover:text-white text-3xl font-bold">&times;</button>
+            </div>
 
-        const TERRAIN_COLORS = {
-            "GRASS": "#22c55e",
-            "STONE_GROUND": "#78716c",
-            "DIRT": "#a16207",
-            "WATER": "#0ea5e9",
-            "WALL": "#4b5563",
-            "DEFAULT": "#111827",
-            "SAND": "#fde047", 
-            "SAVANNA_GRASS": "#d97706", 
-            "JUNGLE_GRASS": "#15803d", 
-            "SNOW": "#f8fafc",
-            // --- ¡NUEVO! ---
-            "CAVE_FLOOR": "#57534e", // stone-600
-            "ROCK_WALL": "#374151"  // gray-700
-        };
-        const ENTITY_COLORS = {
-            "TREE": "#166534",
-            "ROCK": "#57534e",
-            "NPC": "#eab308",
-            "STATUE": "#a8a29e",
-            "ITEM": "#f97316",
-            "DEFAULT": "#fefefe",
-            "CACTUS": "#84cc16", 
-            "ACACIA_TREE": "#a3e635", 
-            "JUNGLE_TREE": "#16a34a", 
-            "SNOW_TREE": "#dbeafe",
-             // --- ¡NUEVO! ---
-            "IRON_VEIN": "#e5e7eb", // gray-200
-            "STAIRS_UP": "#f59e0b", // amber-500
-            "STAIRS_DOWN": "#8b5cf6" // violet-500
-        };
-        const PLAYER_COLOR = "#ef4444"; 
-
-        // --- CONSTANTES FIREBASE ---
-        const CHUNKS_ROOT = 'chunks_v2';
-        const PLAYER_STATES_ROOT = 'playerStates_v2';
-
-        // --- ESTADO GLOBAL ---
-        let saveData = null;
-        let canvas = null;
-        let ctx = null;
-        let minChunkX = 0, maxChunkX = 0, minChunkY = 0, maxChunkY = 0;
-        let minGlobalTileX = 0, minGlobalTileY = 0;
-        let totalCanvasWidth = 0, totalCanvasHeight = 0;
-        let selectedTile = null; 
-        let currentZLevel = 0; // <-- ¡NUEVO!
-
-        // --- ESTADO DE CÁMARA ---
-        let zoom = 1.0;
-        let offsetX = 0;
-        let offsetY = 0;
-        let isPanning = false;
-        let lastMouseX = 0;
-        let lastMouseY = 0;
-
-        // --- ESTADO FIREBASE ---
-        let dbInstance = null;
-
-        // --- ELEMENTOS DEL DOM ---
-        let fileInput, statsPanel, statsContent, legendContent, editorPanel;
-        let selectedTileInfo, tileTypeSelect, downloadButton, mapContainer, loadingMessage;
-        let mainContent;
-        let firebaseConfigInput, firebaseProfileName, firebaseLoadBtn, firebaseMessagePanel;
-        let zLevelDownBtn, zLevelUpBtn, zLevelInput; // <-- ¡NUEVO!
-
-
-        /**
-         * Inicializa la aplicación
-         */
-        function init() {
-            // Cachear elementos del DOM
-            canvas = document.getElementById('map-canvas');
-            ctx = canvas.getContext('2d');
-            fileInput = document.getElementById('file-input');
-            statsPanel = document.getElementById('stats-panel');
-            statsContent = document.getElementById('stats-content');
-            legendContent = document.getElementById('legend-content');
-            editorPanel = document.getElementById('editor-panel');
-            selectedTileInfo = document.getElementById('selected-tile-info');
-            tileTypeSelect = document.getElementById('tile-type-select');
-            downloadButton = document.getElementById('download-button');
-            mapContainer = document.getElementById('map-container');
-            loadingMessage = document.getElementById('loading-message');
-            mainContent = document.getElementById('main-content');
-            
-            firebaseConfigInput = document.getElementById('firebase-config-input');
-            firebaseProfileName = document.getElementById('firebase-profile-name');
-            firebaseLoadBtn = document.getElementById('firebase-load-btn');
-            firebaseMessagePanel = document.getElementById('firebase-message-panel');
-
-            // --- ¡NUEVO! Cachear Z-Level ---
-            zLevelDownBtn = document.getElementById('z-level-down');
-            zLevelUpBtn = document.getElementById('z-level-up');
-            zLevelInput = document.getElementById('z-level-input');
-
-            // Listeners
-            fileInput.addEventListener('change', handleFileLoad);
-            firebaseLoadBtn.addEventListener('click', handleFirebaseLoad); 
-            
-            // --- ¡NUEVO! Listeners Z-Level ---
-            zLevelDownBtn.addEventListener('click', () => changeZLevel(-1));
-            zLevelUpBtn.addEventListener('click', () => changeZLevel(1));
-            zLevelInput.addEventListener('change', handleZLevelInput);
-            
-            // Listeners de Cámara
-            canvas.addEventListener('wheel', handleWheelZoom, { passive: false });
-            canvas.addEventListener('mousedown', handlePanStart);
-            canvas.addEventListener('mousemove', handlePanMove);
-            canvas.addEventListener('mouseup', handlePanEnd);
-            canvas.addEventListener('mouseleave', handlePanEnd);
-            canvas.addEventListener('click', handleCanvasClick);
-            
-            // Listeners de Editor
-            tileTypeSelect.addEventListener('change', handleTileTypeChange);
-            downloadButton.addEventListener('click', handleSave);
-
-            window.addEventListener('resize', resizeViewerCanvas);
-            resizeViewerCanvas(); 
-
-            generateLegend();
-            populateEditorSelect();
-        }
-
-        /**
-         * Ajusta el tamaño del canvas al de su contenedor.
-         */
-        function resizeViewerCanvas() {
-            canvas.width = mainContent.clientWidth;
-            canvas.height = mainContent.clientHeight;
-            draw(); 
-        }
-
-        // --- ¡NUEVAS FUNCIONES Z-LEVEL! ---
-        function changeZLevel(delta) {
-            currentZLevel += delta;
-            zLevelInput.value = currentZLevel;
-            calculateMapBounds(); // Recalcular límites para el nuevo Z
-            centerMap();
-            draw();
-        }
-        function handleZLevelInput() {
-            currentZLevel = parseInt(zLevelInput.value, 10) || 0;
-            zLevelInput.value = currentZLevel;
-            calculateMapBounds();
-            centerMap();
-            draw();
-        }
-
-        // --- FUNCIONES FIREBASE (Sin cambios) ---
-        function initFirebase(configString) {
-            if (dbInstance) return true; 
-            let config;
-            try {
-                config = (new Function("return " + configString))();
-                if (typeof config !== 'object' || !config.apiKey || !config.databaseURL) {
-                    throw new Error("Configuración no válida o incompleta.");
-                }
-            } catch (e) {
-                firebaseMessagePanel.textContent = `Error de Config: ${e.message}`;
-                return false;
-            }
-            try {
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(config);
-                }
-                dbInstance = firebase.database();
-                firebaseMessagePanel.textContent = "Conectado a Firebase.";
-                return true;
-            } catch (e) {
-                firebaseMessagePanel.textContent = `Error de Firebase: ${e.message}`;
-                dbInstance = null;
-                return false;
-            }
-        }
-        async function handleFirebaseLoad() {
-            const configString = firebaseConfigInput.value;
-            const profileName = firebaseProfileName.value.trim();
-            if (!initFirebase(configString)) return;
-
-            try {
-                firebaseMessagePanel.textContent = "Cargando mapa (chunks)...";
-                const chunksSnapshot = await dbInstance.ref(CHUNKS_ROOT).once('value');
-                const loadedMapData = chunksSnapshot.val();
-
-                if (!loadedMapData) {
-                    throw new Error(`No se encontró mapa en '${CHUNKS_ROOT}'.`);
-                }
-                firebaseMessagePanel.textContent = "Mapa cargado. Buscando jugador...";
-
-                let loadedPlayerState = null;
-                if (profileName) {
-                    const playerStateSnapshot = await dbInstance.ref(`${PLAYER_STATES_ROOT}/${profileName}`).once('value');
-                    loadedPlayerState = playerStateSnapshot.val();
-                    if (loadedPlayerState) {
-                         firebaseMessagePanel.textContent = "¡Jugador encontrado!";
-                    } else {
-                         firebaseMessagePanel.textContent = "Jugador no encontrado, usando (0,0,0).";
-                    }
-                } else {
-                    firebaseMessagePanel.textContent = "Sin perfil, usando (0,0,0).";
-                }
-
-                if (!loadedPlayerState) {
-                    loadedPlayerState = {
-                        x: 0, y: 0, z: 0,
-                        stats: { vida: 0, vidamax: 0, energia: 0, energiamax: 0 }
-                    };
-                }
-
-                const cloudSaveData = {
-                    playerState: loadedPlayerState,
-                    mapData: loadedMapData,
-                    savedAt: new Date().toISOString()
-                };
+            <div class="modal-body">
+                <p class="text-sm text-gray-400 mb-4">Define los 30 items iniciales del jugador. Haz clic en un item de la derecha para añadirlo al primer slot vacío. Haz clic en un slot del inventario para editar la cantidad o eliminarlo.</p>
                 
-                processSaveData(cloudSaveData);
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-grow">
+                        <h4 class="text-lg font-semibold text-gray-300 mb-2">InventARIO Inicial (30 Slots)</h4>
+                        <div id="inventory-editor-grid" class="grid grid-cols-5 gap-2 p-3 bg-gray-900 rounded-md border border-gray-700">
+                            </div>
+                    </div>
 
-            } catch (err) {
-                firebaseMessagePanel.textContent = `Error: ${err.message}`;
-                console.error(err);
-            }
-        }
+                    <div class="w-full md:w-64 flex-shrink-0">
+                        <h4 class="text-lg font-semibold text-gray-300 mb-2">Items Disponibles</h4>
+                        <input type="text" id="inventory-item-filter" placeholder="Filtrar items..." class="json-value mb-2">
+                        <div id="inventory-available-items" class="p-3 bg-gray-900 rounded-md border border-gray-700 max-h-[50vh] overflow-y-auto space-y-1">
+                            </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="flex justify-end gap-4 flex-shrink-0 border-t border-gray-700 pt-4">
+                <button type="button" id="inventory-editor-cancel-btn-2" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-150">
+                    Cancelar
+                </button>
+                <button type="button" id="inventory-editor-save-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-150">
+                    Guardar InventARIO
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="image-selector-modal" class="modal-overlay">
+        <div class="modal-content !max-w-4xl"> <div class="flex justify-between items-center flex-shrink-0">
+                <h3 id="image-selector-title" class="text-2xl font-bold text-cyan-400">Seleccionar Asset de Imagen</h3>
+                <button type="button" id="image-selector-close-btn" class="text-gray-400 hover:text-white text-3xl font-bold">&times;</button>
+            </div>
 
-        // --- FUNCIONES DE CARGA REFACTORIZADAS ---
-
-        function handleFileLoad(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            firebaseMessagePanel.textContent = "Cargando archivo local...";
-            const reader = new FileReader();
-            
-            reader.onload = (e) => {
-                try {
-                    const localData = JSON.parse(e.target.result);
-                    processSaveData(localData); 
-                    firebaseMessagePanel.textContent = "Archivo local cargado.";
-                } catch (err) {
-                    loadingMessage.textContent = `Error: ${err.message}`;
-                    loadingMessage.classList.remove('hidden');
-                    firebaseMessagePanel.textContent = `Error: ${err.message}`;
-                    console.error(err);
-                }
-            };
-            reader.readAsText(file);
-        }
-        
-        function processSaveData(data) {
-            if (!data || !data.mapData) {
-                const errorMsg = "Archivo de guardado inválido (falta 'mapData').";
-                firebaseMessagePanel.textContent = errorMsg;
-                loadingMessage.textContent = errorMsg;
-                loadingMessage.classList.remove('hidden');
-                throw new Error(errorMsg);
-            }
-            
-            saveData = data; 
-            
-            // --- ¡MODIFICADO! Leer Z del jugador ---
-            if(saveData.playerState) {
-                renderStats();
-                statsPanel.classList.remove('hidden');
-                // ¡Actualizar el visor al Z del jugador!
-                currentZLevel = saveData.playerState.z || 0;
-                zLevelInput.value = currentZLevel;
-            } else {
-                statsPanel.classList.add('hidden'); 
-                currentZLevel = 0;
-                zLevelInput.value = 0;
-            }
-
-            loadingMessage.classList.add('hidden');
-
-            calculateMapBounds(); // ¡Importante! Calcular para el Z actual
-            centerMap();
-            draw();
-            
-            editorPanel.classList.remove('hidden');
-        }
-
-
-        // --- ¡MODIFICADO! ---
-        function renderStats() {
-            if (!saveData || !saveData.playerState) return;
-            // ¡Leer Z del playerState!
-            const { stats, x, y, z } = saveData.playerState;
-            statsContent.innerHTML = `
-                <p><span class="font-semibold text-gray-400">Pos (X, Y, Z):</span> ${Math.round(x)}, ${Math.round(y)}, ${z || 0}</p>
-                <p><span class="font-semibold text-red-400">Vida:</span> ${stats.vida} / ${stats.vidamax}</p>
-                <p><span class="font-semibold text-green-400">Energía:</span> ${stats.energia} / ${stats.energiamax}</p>
-            `;
-            // Quitados stats antiguos (oro, madera, etc.)
-        }
-
-        function generateLegend() {
-            let legendHTML = '';
-            for (const key in TERRAIN_COLORS) {
-                if (key === "DEFAULT") continue;
-                legendHTML += `<div class="flex items-center"><div class="w-4 h-4 rounded-sm mr-2" style="background-color: ${TERRAIN_COLORS[key]}"></div><span>${key}</span></div>`;
-            }
-             for (const key in ENTITY_COLORS) {
-                if (key === "DEFAULT") continue;
-                legendHTML += `<div class="flex items-center"><div class="w-4 h-4 rounded-sm mr-2 border border-white" style="background-color: ${ENTITY_COLORS[key]}"></div><span>${key}</span></div>`;
-            }
-            legendHTML += `<div class="flex items-center"><div class="w-4 h-4 rounded-full mr-2" style="background-color: ${PLAYER_COLOR}"></div><span>PLAYER</span></div>`;
-            legendContent.innerHTML = legendHTML;
-        }
-
-        function populateEditorSelect() {
-             for (const key in TERRAIN_COLORS) {
-                if (key === "DEFAULT") continue;
-                const option = document.createElement('option');
-                option.value = key;
-                option.textContent = key;
-                tileTypeSelect.appendChild(option);
-            }
-        }
-
-        // --- ¡MODIFICADO! ---
-        function calculateMapBounds() {
-            if (!saveData) return;
-            
-            minChunkX = Infinity; maxChunkX = -Infinity;
-            minChunkY = Infinity; maxChunkY = -Infinity;
-            let chunksFoundOnThisLevel = 0;
-
-            for (const key of Object.keys(saveData.mapData)) {
-                const [x, y, z] = key.split(',').map(Number);
+            <div class="modal-body">
+                <input type="text" id="image-selector-filter" placeholder="Filtrar por clave (ej: TREE, ROCK)..." class="json-value w-full mb-4">
                 
-                // ¡Filtrar por Z!
-                if (z !== currentZLevel) continue; 
-                chunksFoundOnThisLevel++;
+                <div id="image-selector-grid" class="image-selector-grid max-h-[60vh] overflow-y-auto bg-gray-900 p-4 rounded-md border border-gray-700">
+                    </div>
+            </div>
 
-                if (x < minChunkX) minChunkX = x;
-                if (x > maxChunkX) maxChunkX = x;
-                if (y < minChunkY) minChunkY = y;
-                if (y > maxChunkY) maxChunkY = y;
-            }
+            <div class="flex justify-end gap-4 flex-shrink-0 border-t border-gray-700 pt-4">
+                <button type="button" id="image-selector-cancel-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-150">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="entity-selector-modal" class="modal-overlay">
+        <div class="modal-content !max-w-4xl">
+            <div class="flex justify-between items-center flex-shrink-0">
+                <h3 id="entity-selector-title" class="text-2xl font-bold text-lime-400">Seleccionar Entidad</h3>
+                <button type="button" id="entity-selector-close-btn" class="text-gray-400 hover:text-white text-3xl font-bold">&times;</button>
+            </div>
 
-            if (chunksFoundOnThisLevel === 0) {
-                totalCanvasWidth = 0;
-                totalCanvasHeight = 0;
-                minGlobalTileX = 0;
-                minGlobalTileY = 0;
-                return;
-            }
-
-            const totalChunksX = maxChunkX - minChunkX + 1;
-            const totalChunksY = maxChunkY - minChunkY + 1;
-            
-            totalCanvasWidth = totalChunksX * GAME_CHUNK_WIDTH * TILE_SIZE_PX;
-            totalCanvasHeight = totalChunksY * GAME_CHUNK_HEIGHT * TILE_SIZE_PX;
-
-            minGlobalTileX = minChunkX * GAME_CHUNK_WIDTH;
-            minGlobalTileY = minChunkY * GAME_CHUNK_HEIGHT;
-        }
-
-        function centerMap() {
-            if (!saveData || totalCanvasWidth === 0 || totalCanvasHeight === 0) {
-                // Si no hay chunks, solo centrar
-                zoom = 1.0;
-                offsetX = canvas.width / 2;
-                offsetY = canvas.height / 2;
-                return;
-            };
-            const zoomX = canvas.width / totalCanvasWidth;
-            const zoomY = canvas.height / totalCanvasHeight;
-            zoom = Math.min(zoomX, zoomY) * 0.9; 
-            offsetX = (canvas.width - (totalCanvasWidth * zoom)) / 2;
-            offsetY = (canvas.height - (totalCanvasHeight * zoom)) / 2;
-        }
-
-
-        function draw() {
-            if (!ctx) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.save();
-            ctx.translate(offsetX, offsetY);
-            ctx.scale(zoom, zoom);
-
-            if (saveData) {
-                drawMapData();
-                drawPlayer(); 
-            }
-            ctx.restore();
-        }
-
-        // --- ¡MODIFICADO! ---
-        function drawMapData() {
-            // 1. Dibujar Terreno
-            for (const chunkKey in saveData.mapData) {
-                const [chunkX, chunkY, chunkZ] = chunkKey.split(',').map(Number);
+            <div class="modal-body">
+                <input type="text" id="entity-selector-filter" placeholder="Filtrar por clave o nombre..." class="json-value w-full mb-4">
                 
-                // ¡Filtrar por Z!
-                if (chunkZ !== currentZLevel) continue;
+                <div id="entity-selector-grid" class="entity-selector-grid max-h-[60vh] overflow-y-auto bg-gray-900 p-4 rounded-md border border-gray-700">
+                    </div>
+            </div>
 
-                const chunk = saveData.mapData[chunkKey];
-                if (!chunk || !chunk.terrain) continue; 
+            <div class="flex justify-end gap-4 flex-shrink-0 border-t border-gray-700 pt-4">
+                <button type="button" id="entity-selector-cancel-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-150">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="item-selector-modal" class="modal-overlay">
+        <div class="modal-content !max-w-4xl">
+            <div class="flex justify-between items-center flex-shrink-0">
+                <h3 id="item-selector-title" class="text-2xl font-bold text-yellow-400">Seleccionar Item</h3>
+                <button type="button" id="item-selector-close-btn" class="text-gray-400 hover:text-white text-3xl font-bold">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <input type="text" id="item-selector-filter" placeholder="Filtrar por clave o nombre..." class="json-value w-full mb-4">
                 
-                const canvasOffsetX = (chunkX - minChunkX) * GAME_CHUNK_WIDTH * TILE_SIZE_PX;
-                const canvasOffsetY = (chunkY - minChunkY) * GAME_CHUNK_HEIGHT * TILE_SIZE_PX;
+                <div id="item-selector-grid" class="item-selector-grid max-h-[60vh] overflow-y-auto bg-gray-900 p-4 rounded-md border border-gray-700">
+                    </div>
+            </div>
 
-                for (let y = 0; y < GAME_CHUNK_HEIGHT; y++) {
-                    for (let x = 0; x < GAME_CHUNK_WIDTH; x++) {
-                        const tileKey = (chunk.terrain[y] && chunk.terrain[y][x]) ? chunk.terrain[y][x] : "DEFAULT";
-                        ctx.fillStyle = TERRAIN_COLORS[tileKey] || TERRAIN_COLORS.DEFAULT;
-                        ctx.fillRect(
-                            canvasOffsetX + (x * TILE_SIZE_PX),
-                            canvasOffsetY + (y * TILE_SIZE_PX),
-                            TILE_SIZE_PX,
-                            TILE_SIZE_PX
-                        );
-                    }
-                }
-            }
+            <div class="flex justify-end gap-4 flex-shrink-0 border-t border-gray-700 pt-4">
+                <button type="button" id="item-selector-cancel-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-150">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="terrain-selector-modal" class="modal-overlay">
+        <div class="modal-content !max-w-4xl">
+            <div class="flex justify-between items-center flex-shrink-0">
+                <h3 id="terrain-selector-title" class="text-2xl font-bold text-orange-400">Seleccionar Terreno</h3>
+                <button type="button" id="terrain-selector-close-btn" class="text-gray-400 hover:text-white text-3xl font-bold">&times;</button>
+            </div>
 
-            // 2. Dibujar Entidades
-            for (const chunkKey in saveData.mapData) {
-                const [chunkX, chunkY, chunkZ] = chunkKey.split(',').map(Number);
+            <div class="modal-body">
+                <input type="text" id="terrain-selector-filter" placeholder="Filtrar por clave o nombre..." class="json-value w-full mb-4">
                 
-                // ¡Filtrar por Z!
-                if (chunkZ !== currentZLevel) continue;
+                <div id="terrain-selector-grid" class="terrain-selector-grid max-h-[60vh] overflow-y-auto bg-gray-900 p-4 rounded-md border border-gray-700">
+                    </div>
+            </div>
 
-                const chunk = saveData.mapData[chunkKey];
-                if (!chunk || !chunk.entities) continue; 
-                
-                const canvasOffsetX = (chunkX - minChunkX) * GAME_CHUNK_WIDTH * TILE_SIZE_PX;
-                const canvasOffsetY = (chunkY - minChunkY) * GAME_CHUNK_HEIGHT * TILE_SIZE_PX;
-
-                const chunkPixelX = chunkX * GAME_CHUNK_WIDTH * GAME_TILE_WIDTH;
-                const chunkPixelY = chunkY * GAME_CHUNK_HEIGHT * GAME_TILE_HEIGHT;
-
-                for (const entity of chunk.entities) {
-                    // ¡Filtrar entidades por Z!
-                    // (Aunque el chunk ya está filtrado, es una doble seguridad si 'z' está en la entidad)
-                    if (entity.z !== currentZLevel) continue;
-
-                    const localPixelX = entity.x - chunkPixelX;
-                    const localPixelY = entity.y - chunkPixelY;
-                    
-                    const localTileX = Math.floor(localPixelX / GAME_TILE_WIDTH);
-                    const localTileY = Math.floor(localPixelY / GAME_TILE_HEIGHT);
-
-                    const canvasX = canvasOffsetX + (localTileX * TILE_SIZE_PX);
-                    const canvasY = canvasOffsetY + (localTileY * TILE_SIZE_PX);
-
-                    ctx.fillStyle = ENTITY_COLORS[entity.key] || ENTITY_COLORS.DEFAULT;
-                    ctx.fillRect(
-                        canvasX + TILE_SIZE_PX * 0.2, 
-                        canvasY + TILE_SIZE_PX * 0.2,
-                        TILE_SIZE_PX * 0.6,
-                        TILE_SIZE_PX * 0.6
-                    );
-                }
-            }
+            <div class="flex justify-end gap-4 flex-shrink-0 border-t border-gray-700 pt-4">
+                <button type="button" id="terrain-selector-cancel-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-150">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+    <canvas id="resize-canvas" class="hidden"></canvas>
+    
+    <style>
+        .gallery-container {
+            padding: 1rem;
+            border: 1px solid #374151; /* border-gray-700 */
+            border-radius: 0.375rem; /* rounded-md */
+            background-color: #111827; /* bg-gray-900 */
+            min-height: 200px;
+            max-height: 60vh;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid */
+            gap: 1rem;
         }
-
-        // --- ¡MODIFICADO! ---
-        function drawPlayer() {
-            if (!saveData || !saveData.playerState) return; 
-            
-            // ¡No dibujar al jugador si no está en este Z-level!
-            if (saveData.playerState.z !== currentZLevel) return;
-            
-            const playerX = saveData.playerState.x;
-            const playerY = saveData.playerState.y;
-
-            const globalPlayerTileX = Math.floor(playerX / GAME_TILE_WIDTH);
-            const globalPlayerTileY = Math.floor(playerY / GAME_TILE_HEIGHT);
-
-            const playerCanvasTileX = globalPlayerTileX - minGlobalTileX;
-            const playerCanvasTileY = globalPlayerTileY - minGlobalTileY;
-
-            ctx.fillStyle = PLAYER_COLOR;
-            ctx.beginPath();
-            ctx.arc(
-                (playerCanvasTileX * TILE_SIZE_PX) + TILE_SIZE_PX / 2,
-                (playerCanvasTileY * TILE_SIZE_PX) + TILE_SIZE_PX / 2,
-                TILE_SIZE_PX / 1.5, 
-                0, 2 * Math.PI
-            );
-            ctx.fill();
+        .json-editor-btn {
+            font-weight: 700; /* font-bold */
+            padding: 0.5rem 1rem; /* py-2 px-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            transition: all 150ms; /* transition-all duration-150 */
+            color: white;
+            height: 2.5rem; /* h-10 */
         }
-
-
-        // --- FUNCIONES DE CÁMARA (Sin cambios) ---
-        function handleWheelZoom(event) {
-            event.preventDefault();
-            if (!saveData) return;
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = event.clientX - rect.left;
-            const mouseY = event.clientY - rect.top;
-            const worldX = (mouseX - offsetX) / zoom;
-            const worldY = (mouseY - offsetY) / zoom;
-            const zoomFactor = 1.1;
-            const newZoom = event.deltaY < 0 ? zoom * zoomFactor : zoom / zoomFactor;
-            zoom = Math.max(0.05, Math.min(newZoom, 50)); 
-            offsetX = mouseX - worldX * zoom;
-            offsetY = mouseY - worldY * zoom;
-            draw();
+        .tab-btn[aria-selected="true"] {
+            border-color: #06b6d4; /* border-cyan-500 */
+            color: #22d3ee; /* text-cyan-400 */
         }
-        function handlePanStart(event) {
-            if (event.button !== 0) return; 
-            isPanning = true;
-            lastMouseX = event.clientX;
-            lastMouseY = event.clientY;
-            canvas.style.cursor = 'grabbing';
+        .tab-btn:not([aria-selected="true"]) {
+            border-color: transparent;
+            color: #9ca3af; /* text-gray-400 */
         }
-        function handlePanMove(event) {
-            if (!isPanning) return;
-            const dx = event.clientX - lastMouseX;
-            const dy = event.clientY - lastMouseY;
-            offsetX += dx;
-            offsetY += dy;
-            lastMouseX = event.clientX;
-            lastMouseY = event.clientY;
-            draw();
+        .tab-btn:hover:not([aria-selected="true"]) {
+            color: #e5e7eb; /* text-gray-200 */
+            border-color: #4b5563; /* border-gray-500 */
         }
-        function handlePanEnd() {
-            isPanning = false;
-            canvas.style.cursor = 'grab';
+        /* --- ¡NUEVO! Estilo para el item de asset clickeable --- */
+        .asset-grid-item:hover {
+            cursor: pointer;
+            outline: 2px solid #06b6d4; /* hover:ring-2 hover:ring-cyan-500 */
+            outline-offset: 2px;
         }
+    </style>
 
-        // --- FUNCIONES DE EDICIÓN (MODIFICADAS) ---
-
-        function handleCanvasClick(event) {
-            if (!saveData || isPanning) return; 
-            
-            const dx = event.clientX - lastMouseX;
-            const dy = event.clientY - lastMouseY;
-            if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
-                lastMouseX = event.clientX;
-                lastMouseY = event.clientY;
-                return;
-            }
-            lastMouseX = event.clientX;
-            lastMouseY = event.clientY;
-
-            const rect = canvas.getBoundingClientRect();
-            const canvasX = event.clientX - rect.left;
-            const canvasY = event.clientY - rect.top;
-
-            const worldX = (canvasX - offsetX) / zoom;
-            const worldY = (canvasY - offsetY) / zoom;
-            
-            const clickedCanvasTileX = Math.floor(worldX / TILE_SIZE_PX);
-            const clickedCanvasTileY = Math.floor(worldY / TILE_SIZE_PX);
-
-            const globalTileX = minGlobalTileX + clickedCanvasTileX;
-            const globalTileY = minGlobalTileY + clickedCanvasTileY;
-
-            const chunkX = Math.floor(globalTileX / GAME_CHUNK_WIDTH);
-            const chunkY = Math.floor(globalTileY / GAME_CHUNK_HEIGHT);
-            const chunkKey = `${chunkX},${chunkY},${currentZLevel}`; // <-- ¡USAR Z!
-
-            const localX = ((globalTileX % GAME_CHUNK_WIDTH) + GAME_CHUNK_WIDTH) % GAME_CHUNK_WIDTH;
-            const localY = ((globalTileY % GAME_CHUNK_HEIGHT) + GAME_CHUNK_HEIGHT) % GAME_CHUNK_HEIGHT;
-
-            const chunk = saveData.mapData[chunkKey];
-            if (!chunk || !chunk.terrain[localY]) { 
-                selectedTileInfo.textContent = "Tile fuera de los límites (no guardado).";
-                selectedTile = null;
-                return;
-            }
-
-            const tileKey = chunk.terrain[localY][localX];
-            
-            selectedTileInfo.textContent = `Coords: (${globalTileX}, ${globalTileY}, ${currentZLevel}) - Tipo: ${tileKey}`;
-            tileTypeSelect.value = tileKey;
-            
-            selectedTile = { chunkKey, localX, localY, globalTileX, globalTileY }; 
-        }
-
-        function handleTileTypeChange(event) {
-            if (!selectedTile || !saveData) return;
-
-            const newTileKey = event.target.value;
-            const { chunkKey, localX, localY, globalTileX, globalTileY } = selectedTile;
-
-            saveData.mapData[chunkKey].terrain[localY][localX] = newTileKey;
-            selectedTileInfo.textContent = `Coords: (${globalTileX}, ${globalTileY}, ${currentZLevel}) - Tipo: ${newTileKey}`;
-            draw();
-        }
-
-        function handleSave() {
-            if (!saveData) return;
-            
-            saveData.savedAt = new Date().toISOString();
-            const jsonData = JSON.stringify(saveData);
-            downloadJSON(jsonData, 'partida_editada_3D.json');
-        }
-
-        function downloadJSON(content, fileName) {
-            const a = document.createElement('a');
-            const file = new Blob([content], { type: 'application/json' });
-            a.href = URL.createObjectURL(file);
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(a.href);
-        }
-
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+    <script type="module" src="jsoneditor.js"></script>
+    <script type="module" src="inventory_modal.js"></script>
+    <!-- ¡NUEVO SCRIPT! -->
+    <script type="module" src="gallery_3d_preview.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
